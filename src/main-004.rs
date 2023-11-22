@@ -144,39 +144,39 @@ impl NeuralNetwork {
     }
 
     fn train(&self, input: Matrix, targets: Matrix) {
-        self.backward_propagation(
-            self.forward_propagation(input.clone()),
+        self.backward_propagate(
+            self.forward_propagate(input.clone()),
             input, 
             targets
         );
     }
 
     fn predict(&self, input: Matrix) -> Matrix {
-        let (_, _, output_forwarded) = self.forward_propagation(input);
+        let (_, _, output_forwarded) = self.forward_propagate(input);
 
         output_forwarded
     }
 
-    fn forward_propagation(&self, input: Matrix) -> (Matrix, Matrix, Matrix) {
+    fn forward_propagate(&self, input: Matrix) -> (Matrix, Matrix, Matrix) {
         let input_forwarded = {
-            self.apply_activation(input.clone(), self.input_layer.clone());
+            self.forward(input.clone(), self.input_layer.clone());
             self.input_layer.borrow().forwarded.clone().unwrap()
         };
 
         let hidden_forwarded = {
-            self.apply_activation(input_forwarded.clone(), self.hidden_layer.clone());
+            self.forward(input_forwarded.clone(), self.hidden_layer.clone());
             self.hidden_layer.borrow().forwarded.clone().unwrap()
         };
 
         let output_forwarded = {
-            self.apply_activation(hidden_forwarded.clone(), self.output_layer.clone());
+            self.forward(hidden_forwarded.clone(), self.output_layer.clone());
             self.output_layer.borrow().forwarded.clone().unwrap()
         };
 
         (input_forwarded, hidden_forwarded, output_forwarded)
     }
 
-    fn backward_propagation(&self, forward: (Matrix, Matrix, Matrix), input: Matrix, targets: Matrix) {
+    fn backward_propagate(&self, forward: (Matrix, Matrix, Matrix), input: Matrix, targets: Matrix) {
         let (input_forwarded, hidden_forwarded, output_forwarded) = forward;
 
         let error = Matrix::subtract(targets.transpose(), output_forwarded.clone());
@@ -186,26 +186,26 @@ impl NeuralNetwork {
             self.output_layer.borrow().matrix.clone()
         );
 
-        self.adjust(
+        self.backward(
             hidden_forwarded.clone(),
             self.output_layer.clone(),
             Matrix::naive_multiply(output_forwarded.clone().derivative(), error.clone())
         );
 
-        self.adjust(
+        self.backward(
             input_forwarded.clone(),
             self.hidden_layer.clone(),
             Matrix::naive_multiply(hidden_forwarded.clone().derivative(), factor.clone())
         );
 
-        self.adjust(
+        self.backward(
             input.clone(),
             self.input_layer.clone(),
             Matrix::naive_multiply(input_forwarded.clone().derivative(), factor.clone())
         );
     }
 
-    fn apply_activation(&self, input: Matrix, layer: Rc<RefCell<Layer>>) {
+    fn forward(&self, input: Matrix, layer: Rc<RefCell<Layer>>) {
         let mut layer_borrow = layer.borrow_mut();
 
         layer_borrow.forwarded = Some(
@@ -216,13 +216,11 @@ impl NeuralNetwork {
         )
     }
 
-    fn adjust(&self, input: Matrix, layer: Rc<RefCell<Layer>>, delta: Matrix) {
-        let adjustment = Matrix::multiply(input.transpose(), delta.clone());
-
+    fn backward(&self, input: Matrix, layer: Rc<RefCell<Layer>>, delta: Matrix) {
         let mut layer_borrow = layer.borrow_mut();
 
-        layer_borrow.matrix = 
-            Matrix::add(layer_borrow.matrix.clone(), adjustment.transpose())
+        let adjustment = Matrix::multiply(input.transpose(), delta.clone());
+        layer_borrow.matrix = Matrix::add(layer_borrow.matrix.clone(), adjustment.transpose());
     }
 }
 
@@ -241,12 +239,9 @@ fn main() {
 
     let network = NeuralNetwork::new((4, 3), (4, 4), (1, 4));
 
-    for _ in 0..2 {
+    for _ in 0..3 {
         network.train(input.clone(), targets.clone());
     }
 
-    println!(
-        "predict([[1.0, 1.0, 0.0]]) = {:?}", 
-        network.predict(Matrix { data: vec![vec![1.0, 1.0, 0.0]] }).data
-    );
+    println!("Predictions using input [[1.0, 1.0, 0.0]]: {:?}", network.predict(Matrix { data: vec![vec![1.0, 1.0, 0.0]] }));
 }
