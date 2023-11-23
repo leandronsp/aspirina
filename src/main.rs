@@ -1,14 +1,12 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-struct Calc {}
-
-impl Calc {
-    fn sigmoid(x: &f64) -> f64 {
+mod calc {
+    pub fn sigmoid(x: &f64) -> f64 {
         1.0 / (1.0 + (-x).exp())
     }
 
-    fn sigmoid_derivative(x: &f64) -> f64 {
+    pub fn sigmoid_derivative(x: &f64) -> f64 {
         x * (1.0 - x)
     }
 }
@@ -99,7 +97,7 @@ impl Matrix {
             self
             .data
             .iter()
-            .map(|row| { row.iter().map(Calc::sigmoid_derivative).collect() })
+            .map(|row| { row.iter().map(calc::sigmoid_derivative).collect() })
             .collect();
 
         Self { data: result }
@@ -182,7 +180,7 @@ impl NeuralNetwork {
         let error = Matrix::subtract(targets.transpose(), output_forwarded.clone());
 
         let factor = Matrix::multiply(
-            Matrix::naive_multiply(output_forwarded.clone(), error.clone()),
+            Matrix::naive_multiply(output_forwarded.clone().derivative(), error.clone()),
             self.output_layer.borrow().matrix.clone()
         );
 
@@ -211,7 +209,7 @@ impl NeuralNetwork {
         layer_borrow.forwarded = Some(
             Matrix::new(
                 Matrix::multiply(input, layer_borrow.matrix.transpose())
-                .data.iter().map(|row| { row.iter().map(Calc::sigmoid).collect() }).collect()
+                .data.iter().map(|row| { row.iter().map(calc::sigmoid).collect() }).collect()
             )
         )
     }
@@ -241,7 +239,7 @@ fn main() {
 
     let network = NeuralNetwork::new((4, 3), (4, 4), (1, 4));
 
-    for _ in 0..2 {
+    for _ in 0..5_000 {
         network.train(input.clone(), targets.clone());
     }
 
