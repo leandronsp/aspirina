@@ -118,19 +118,31 @@ struct NeuralNetwork {
 }
 
 impl NeuralNetwork {
-    fn new(input_shape: (usize, usize), hidden_shape: (usize, usize), output_shape: (usize, usize)) -> Self {
+    fn setup() -> Self {
         let input_layer = Layer {
-            matrix: Matrix { data: vec![vec![0.0; input_shape.1]; input_shape.0] },
+            matrix: Matrix { data: vec![
+                vec![-0.16595599, -0.70648822, -0.20646505],
+                vec![0.44064899, -0.81532281, 0.07763347],
+                vec![-0.99977125, -0.62747958, -0.16161097],
+                vec![-0.39533485, -0.30887855, 0.370439]
+            ]},
             forwarded: None,
         };
 
         let hidden_layer = Layer {
-            matrix: Matrix { data: vec![vec![0.0; hidden_shape.1]; hidden_shape.0] },
+            matrix: Matrix { data: vec![
+                vec![-0.16595599, -0.70648822, -0.20646505, -0.34093502],
+                vec![0.44064899, -0.81532281, 0.07763347, 0.44093502],
+                vec![-0.99977125, -0.62747958, -0.16161097, 0.14093502],
+                vec![-0.39533485, -0.30887855, 0.370439, -0.54093502]
+            ]},
             forwarded: None,
         };
 
         let output_layer = Layer {
-            matrix: Matrix { data: vec![vec![0.0; output_shape.1]; output_shape.0] },
+            matrix: Matrix { data: vec![
+                vec![-0.5910955, 0.75623487, -0.94522481, 0.64093502]
+            ]},
             forwarded: None,
         };
 
@@ -237,9 +249,9 @@ fn main() {
 
     let targets = Matrix { data: vec![vec![0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0]] };
 
-    let network = NeuralNetwork::new((4, 3), (4, 4), (1, 4));
+    let network = NeuralNetwork::setup();
 
-    for _ in 0..5_000 {
+    for _ in 0..1_000 {
         network.train(input.clone(), targets.clone());
     }
 
