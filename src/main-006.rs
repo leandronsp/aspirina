@@ -131,9 +131,11 @@ impl NeuralNetwork {
     }
 
     fn train(&self, input: Matrix, targets: Matrix) {
-        let forwarded = self.forward_propagation(input.clone());
-
-        self.back_propagation(forwarded, input, targets);
+        self.backward_propagation(
+            self.forward_propagation(input.clone()),
+            input, 
+            targets
+        );
     }
 
     fn predict(&self, input: Matrix) -> Matrix {
@@ -153,10 +155,9 @@ impl NeuralNetwork {
         forwarded
     }
 
-    fn back_propagation(&self, forwarded: Vec<Matrix>, input: Matrix, targets: Matrix) {
+    fn backward_propagation(&self, forwarded: Vec<Matrix>, input: Matrix, targets: Matrix) {
         let mut error = Matrix::subtract(targets.transpose(), forwarded.last().unwrap().clone());
 
-        // Adjust weights in Layers
         for (idx, layer) in self.layers.iter().enumerate().rev() {
             let input_to_layer = if idx == 0 { input.clone() } else { forwarded[idx - 1].clone() };
 
@@ -245,7 +246,7 @@ fn main() {
         },
     ];
 
-    let network = NeuralNetwork::new(layers); // 3 layers (input, hidden, output)
+    let network = NeuralNetwork::new(layers);
 
     let input = Matrix { data: vec![
         vec![0.0, 0.0, 1.0], 
@@ -254,13 +255,13 @@ fn main() {
         vec![0.0, 1.0, 0.0], 
         vec![1.0, 0.0, 1.0], 
         vec![1.0, 0.0, 0.0], 
-        vec![0.6, 0.6, 0.0],
-        vec![0.6, 0.6, 1.0],
+        vec![0.5, 0.5, 0.0],
+        vec![0.5, 0.5, 1.0],
     ]};
 
     let targets = Matrix { data: vec![vec![0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0]] };
 
-    for idx in 0..10_000 {
+    for idx in 0..1_000 {
         println!("Iteration: {}", idx);
         network.train(input.clone(), targets.clone());
     }

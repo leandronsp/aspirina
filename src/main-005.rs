@@ -9,14 +9,6 @@ mod calc {
     pub fn sigmoid_derivative(x: &f64) -> f64 {
         x * (1.0 - x)
     }
-
-    pub fn tanh(x: &f64) -> f64 {
-        x.tanh()
-    }
-
-    pub fn tanh_derivative(x: &f64) -> f64 {
-        1.0 - x.tanh().powi(2)
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -120,60 +112,107 @@ struct Layer {
 
 #[derive(Debug, Clone)]
 struct NeuralNetwork {
-    layers: Vec<Rc<RefCell<Layer>>>,
+    input_layer: Rc<RefCell<Layer>>,
+    hidden_layer: Rc<RefCell<Layer>>,
+    output_layer: Rc<RefCell<Layer>>,
 }
 
 impl NeuralNetwork {
-    fn new(layers: Vec<Layer>) -> Self {
+    fn setup() -> Self {
+        let input_layer = Layer {
+            matrix: Matrix { data: vec![
+                vec![-0.16595599, -0.70648822, -0.20646505],
+                vec![0.44064899, -0.81532281, 0.07763347],
+                vec![-0.99977125, -0.62747958, -0.16161097],
+                vec![-0.39533485, -0.30887855, 0.370439]
+            ]},
+            forwarded: None,
+        };
+
+        let hidden_layer = Layer {
+            matrix: Matrix { data: vec![
+                vec![-0.16595599, -0.70648822, -0.20646505, -0.34093502],
+                vec![0.44064899, -0.81532281, 0.07763347, 0.44093502],
+                vec![-0.99977125, -0.62747958, -0.16161097, 0.14093502],
+                vec![-0.39533485, -0.30887855, 0.370439, -0.54093502]
+            ]},
+            forwarded: None,
+        };
+
+        let output_layer = Layer {
+            matrix: Matrix { data: vec![
+                vec![-0.5910955, 0.75623487, -0.94522481, 0.64093502]
+            ]},
+            forwarded: None,
+        };
+
         Self {
-            layers: layers.into_iter().map(|layer| Rc::new(RefCell::new(layer))).collect(),
+            input_layer: Rc::new(RefCell::new(input_layer)),
+            hidden_layer: Rc::new(RefCell::new(hidden_layer)),
+            output_layer: Rc::new(RefCell::new(output_layer)),
         }
     }
 
     fn train(&self, input: Matrix, targets: Matrix) {
-        let forwarded = self.forward_propagation(input.clone());
-
-        self.back_propagation(forwarded, input, targets);
+        self.backward_propagation(
+            self.forward_propagation(input.clone()),
+            input, 
+            targets
+        );
     }
 
     fn predict(&self, input: Matrix) -> Matrix {
-        self.forward_propagation(input).last().unwrap().clone()
+        let (_, _, output_forwarded) = self.forward_propagation(input);
+
+        output_forwarded
     }
 
-    fn forward_propagation(&self, input: Matrix) -> Vec<Matrix> {
-        let mut forwarded = Vec::new();
-        let mut input = input;
+    fn forward_propagation(&self, input: Matrix) -> (Matrix, Matrix, Matrix) {
+        let input_forwarded = {
+            self.apply_activation(input.clone(), self.input_layer.clone());
+            self.input_layer.borrow().forwarded.clone().unwrap()
+        };
 
-        for layer in &self.layers {
-            self.apply_activation(input.clone(), layer.clone());
-            input = layer.borrow().forwarded.clone().unwrap();
-            forwarded.push(input.clone());
-        }
+        let hidden_forwarded = {
+            self.apply_activation(input_forwarded.clone(), self.hidden_layer.clone());
+            self.hidden_layer.borrow().forwarded.clone().unwrap()
+        };
 
-        forwarded
+        let output_forwarded = {
+            self.apply_activation(hidden_forwarded.clone(), self.output_layer.clone());
+            self.output_layer.borrow().forwarded.clone().unwrap()
+        };
+
+        (input_forwarded, hidden_forwarded, output_forwarded)
     }
 
-    fn back_propagation(&self, forwarded: Vec<Matrix>, input: Matrix, targets: Matrix) {
-        let mut error = Matrix::subtract(targets.transpose(), forwarded.last().unwrap().clone());
+    fn backward_propagation(&self, forward: (Matrix, Matrix, Matrix), input: Matrix, targets: Matrix) {
+        let (input_forwarded, hidden_forwarded, output_forwarded) = forward;
 
-        // Adjust weights in Layers
-        for (idx, layer) in self.layers.iter().enumerate().rev() {
-            let input_to_layer = if idx == 0 { input.clone() } else { forwarded[idx - 1].clone() };
+        let error = Matrix::subtract(targets.transpose(), output_forwarded.clone());
 
-            let delta = Matrix::naive_multiply(
-                forwarded[idx].clone().derivative(),
-                error.clone()
-            );
+        let factor = Matrix::multiply(
+            Matrix::naive_multiply(output_forwarded.clone().derivative(), error.clone()),
+            self.output_layer.borrow().matrix.clone()
+        );
 
-            if idx > 0 {
-                error = Matrix::multiply(
-                    delta.clone(),
-                    layer.borrow().matrix.clone()
-                );
-            }
+        self.adjust(
+            hidden_forwarded.clone(),
+            self.output_layer.clone(),
+            Matrix::naive_multiply(output_forwarded.clone().derivative(), error.clone())
+        );
 
-            self.adjust(input_to_layer, layer.clone(), delta);
-        }
+        self.adjust(
+            input_forwarded.clone(),
+            self.hidden_layer.clone(),
+            Matrix::naive_multiply(hidden_forwarded.clone().derivative(), factor.clone())
+        );
+
+        self.adjust(
+            input.clone(),
+            self.input_layer.clone(),
+            Matrix::naive_multiply(input_forwarded.clone().derivative(), factor.clone())
+        );
     }
 
     fn apply_activation(&self, input: Matrix, layer: Rc<RefCell<Layer>>) {
@@ -198,70 +237,21 @@ impl NeuralNetwork {
 }
 
 fn main() {
-    let layers = vec![
-        // Input Layer
-        Layer {
-            matrix: Matrix {
-                data: vec![
-                    vec![-0.16595599, -0.70648822, -0.20646505],
-                    vec![0.44064899, -0.81532281, 0.07763347],
-                    vec![-0.99977125, -0.62747958, -0.16161097],
-                    vec![-0.39533485, -0.30887855, 0.370439],
-                ],
-            },
-            forwarded: None,
-        },
-        // Hidden Layers
-        Layer {
-            matrix: Matrix {
-                data: vec![
-                    vec![-0.16595599, -0.70648822, -0.20646505, -0.34093502],
-                    vec![0.44064899, -0.81532281, 0.07763347, 0.44093502],
-                    vec![-0.99977125, -0.62747958, -0.16161097, 0.14093502],
-                    vec![-0.39533485, -0.30887855, 0.370439, -0.54093502],
-                ],
-            },
-            forwarded: None,
-        },
-        Layer {
-            matrix: Matrix {
-                data: vec![
-                    vec![-0.23456789, 0.87654321, -0.34567891, 0.12345678],
-                    vec![0.98765432, -0.45678912, 0.56789123, -0.67891234],
-                    vec![-0.89123456, 0.78912345, -0.43219876, 0.32198765],
-                    vec![0.65432109, -0.54321098, 0.21098765, -0.10987654],
-                ],
-            },
-            forwarded: None,
-        },
-        // Output Layer
-        Layer {
-            matrix: Matrix {
-                data: vec![
-                    vec![-0.5910955, 0.75623487, -0.94522481, 0.64093502],
-                ],
-            },
-            forwarded: None,
-        },
-    ];
-
-    let network = NeuralNetwork::new(layers); // 3 layers (input, hidden, output)
-
     let input = Matrix { data: vec![
         vec![0.0, 0.0, 1.0], 
-        vec![0.0, 0.0, 0.0],
         vec![0.0, 1.0, 1.0], 
-        vec![0.0, 1.0, 0.0], 
         vec![1.0, 0.0, 1.0], 
+        vec![0.0, 1.0, 0.0], 
         vec![1.0, 0.0, 0.0], 
-        vec![0.6, 0.6, 0.0],
-        vec![0.6, 0.6, 1.0],
+        vec![1.0, 1.0, 1.0], 
+        vec![0.0, 0.0, 0.0]
     ]};
 
-    let targets = Matrix { data: vec![vec![0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0]] };
+    let targets = Matrix { data: vec![vec![0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0]] };
 
-    for idx in 0..10_000 {
-        println!("Iteration: {}", idx);
+    let network = NeuralNetwork::setup();
+
+    for _ in 0..1_000 {
         network.train(input.clone(), targets.clone());
     }
 
