@@ -197,6 +197,7 @@ impl NeuralNetwork {
     }
 }
 
+
 fn main() {
     let layers = vec![
         // Input Layer
