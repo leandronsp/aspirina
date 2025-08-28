@@ -18,3 +18,4 @@ impl Calc {
         1.0 - x.tanh().powi(2)
     }
 }
+
