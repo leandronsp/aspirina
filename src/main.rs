@@ -22,9 +22,12 @@ fn main() {
             vec![-0.89123456, 0.78912345, -0.43219876, 0.32198765],
             vec![0.65432109, -0.54321098, 0.21098765, -0.10987654],
         ])),
-        Layer::new(Matrix::new(vec![
-            vec![-0.5910955, 0.75623487, -0.94522481, 0.64093502],
-        ])),
+        Layer::new(Matrix::new(vec![vec![
+            -0.5910955,
+            0.75623487,
+            -0.94522481,
+            0.64093502,
+        ]])),
     ];
 
     let network = NeuralNetwork::new(layers);
@@ -42,15 +45,13 @@ fn main() {
 
     let targets = Matrix::new(vec![vec![0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0]]);
 
-    for idx in 0..10_000 {
+    for idx in 0..100_000 {
         println!("Iteration: {}", idx);
         network.train(input.clone(), targets.clone());
     }
 
     println!(
         "predict([[1.0, 1.0, 0.0]]) = {:?}",
-        network
-            .predict(Matrix::new(vec![vec![1.0, 1.0, 0.0]]))
-            .data
+        network.predict(Matrix::new(vec![vec![1.0, 1.0, 0.0]])).data
     );
 }

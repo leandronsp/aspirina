@@ -106,4 +106,3 @@ fn derivative_applies_sigmoid_derivative() {
     assert_eq!(result.data[1][1], 0.1875);
     assert!((result.data[1][2] - 0.09).abs() < 1e-10);
 }
-

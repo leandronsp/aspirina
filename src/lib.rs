@@ -1,4 +1,4 @@
 pub mod calc;
-pub mod matrix;
 pub mod layer;
+pub mod matrix;
 pub mod neural_network;
