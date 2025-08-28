@@ -54,4 +54,9 @@ fn main() {
         "predict([[1.0, 1.0, 0.0]]) = {:?}",
         network.predict(Matrix::new(vec![vec![1.0, 1.0, 0.0]])).data
     );
+
+    println!(
+        "predict([[1.0, 0.0, 1.0]]) = {:?}",
+        network.predict(Matrix::new(vec![vec![1.0, 0.0, 1.0]])).data
+    );
 }

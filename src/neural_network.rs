@@ -76,6 +76,7 @@ impl NeuralNetwork {
     fn adjust(&self, input: Matrix, layer: Rc<RefCell<Layer>>, delta: Matrix) {
         let adjustment = Matrix::multiply(input.transpose(), delta.clone());
         let mut layer_borrow = layer.borrow_mut();
-        layer_borrow.matrix = Matrix::add(layer_borrow.matrix.clone(), adjustment.transpose())
+        layer_borrow.matrix =
+            Matrix::matrix_add(layer_borrow.matrix.clone(), adjustment.transpose())
     }
 }

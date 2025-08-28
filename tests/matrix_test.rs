@@ -74,7 +74,7 @@ fn add_same_size_matrices() {
 
     let m2 = Matrix::new(vec![vec![5.0, 6.0], vec![7.0, 8.0]]);
 
-    let result = Matrix::add(m1, m2);
+    let result = Matrix::matrix_add(m1, m2);
 
     assert_eq!(result.data, vec![vec![6.0, 8.0], vec![10.0, 12.0],]);
 }

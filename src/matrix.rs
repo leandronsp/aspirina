@@ -1,4 +1,5 @@
 use crate::calc::Calc;
+use std::ops::Add;
 
 #[derive(Debug, Clone)]
 pub struct Matrix {
@@ -14,11 +15,11 @@ impl Matrix {
         let rows = self.data.len();
         let cols = self.data[0].len();
 
-        let mut result = vec![vec![self.data[0][0]; rows]; cols];
+        let mut result = vec![vec![0.0; rows]; cols];
 
-        for i in 0..rows {
-            for j in 0..cols {
-                result[j][i] = self.data[i][j];
+        for (i, row) in self.data.iter().enumerate() {
+            for (j, &value) in row.iter().enumerate() {
+                result[j][i] = value;
             }
         }
 
@@ -37,16 +38,16 @@ impl Matrix {
 
         let mut result = vec![vec![0.0; m2_cols_len]; m1_rows_len];
 
-        for i in 0..m1_rows_len {
-            for j in 0..m2_cols_len {
-                result[i][j] = op(m1.data[i][j], m2.data[i][j]);
+        for (i, (row1, row2)) in m1.data.iter().zip(m2.data.iter()).enumerate() {
+            for (j, (&val1, &val2)) in row1.iter().zip(row2.iter()).enumerate() {
+                result[i][j] = op(val1, val2);
             }
         }
 
         Self { data: result }
     }
 
-    pub fn add(m1: Self, m2: Self) -> Self {
+    pub fn matrix_add(m1: Self, m2: Self) -> Self {
         Self::element_wise_operation(m1, m2, |a, b| a + b)
     }
 
@@ -70,10 +71,10 @@ impl Matrix {
 
         let mut result = vec![vec![0.0; m2_cols_len]; m1_rows_len];
 
-        for i in 0..m1_rows_len {
+        for (i, m1_row) in m1.data.iter().enumerate() {
             for j in 0..m2_cols_len {
-                for k in 0..m1_cols_len {
-                    result[i][j] += m1.data[i][k] * m2.data[k][j];
+                for (k, &m1_val) in m1_row.iter().enumerate() {
+                    result[i][j] += m1_val * m2.data[k][j];
                 }
             }
         }
@@ -89,5 +90,13 @@ impl Matrix {
             .collect();
 
         Self { data: result }
+    }
+}
+
+impl Add for Matrix {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        Self::element_wise_operation(self, other, |a, b| a + b)
     }
 }
