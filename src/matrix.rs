@@ -6,6 +6,10 @@ pub struct Matrix {
 }
 
 impl Matrix {
+    pub fn new(data: Vec<Vec<f64>>) -> Self {
+        Self { data }
+    }
+
     pub fn transpose(&self) -> Self {
         let rows = self.data.len();
         let cols = self.data[0].len();
@@ -21,7 +25,7 @@ impl Matrix {
         Self { data: result }
     }
 
-    pub fn element_wise_operation(m1: Self, m2: Self, op: fn(f64, f64) -> f64) -> Self {
+    fn element_wise_operation(m1: Self, m2: Self, op: fn(f64, f64) -> f64) -> Self {
         let m1_rows_len = m1.data.len();
         let m2_rows_len = m2.data.len();
         let m1_cols_len = m1.data[0].len();
@@ -35,7 +39,7 @@ impl Matrix {
 
         for i in 0..m1_rows_len {
             for j in 0..m2_cols_len {
-                result[i][j] += op(m1.data[i][j], m2.data[i][j]);
+                result[i][j] = op(m1.data[i][j], m2.data[i][j]);
             }
         }
 
@@ -43,15 +47,15 @@ impl Matrix {
     }
 
     pub fn add(m1: Self, m2: Self) -> Self {
-        Self::element_wise_operation(m1, m2, |a, b| { a + b })
+        Self::element_wise_operation(m1, m2, |a, b| a + b)
     }
 
     pub fn subtract(m1: Self, m2: Self) -> Self {
-        Self::element_wise_operation(m1, m2, |a, b| { a - b })
+        Self::element_wise_operation(m1, m2, |a, b| a - b)
     }
 
     pub fn naive_multiply(m1: Self, m2: Self) -> Self {
-        Self::element_wise_operation(m1, m2, |a, b| { a * b })
+        Self::element_wise_operation(m1, m2, |a, b| a * b)
     }
 
     pub fn multiply(m1: Self, m2: Self) -> Self {
@@ -61,7 +65,7 @@ impl Matrix {
         let m2_cols_len = m2.data[0].len();
 
         if m1_cols_len != m2_rows_len {
-            panic!("Incompatible dimensions: {:?} and {:?}", m1, m2);
+            panic!("Incompatible dimensions for matrix multiplication");
         }
 
         let mut result = vec![vec![0.0; m2_cols_len]; m1_rows_len];
@@ -78,14 +82,12 @@ impl Matrix {
     }
 
     pub fn derivative(&self) -> Self {
-        let result = 
-            self
+        let result = self
             .data
             .iter()
-            .map(|row| { row.iter().map(Calc::sigmoid_derivative).collect() })
+            .map(|row| row.iter().map(Calc::sigmoid_derivative).collect())
             .collect();
 
         Self { data: result }
     }
 }
-
