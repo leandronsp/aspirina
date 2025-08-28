@@ -66,15 +66,15 @@ impl Matrix {
     }
 
     fn add(m1: Self, m2: Self) -> Self {
-        Self::element_wise_operation(m1, m2, |a, b| { a + b })
+        Self::element_wise_operation(m1, m2, |a, b| a + b)
     }
 
     fn subtract(m1: Self, m2: Self) -> Self {
-        Self::element_wise_operation(m1, m2, |a, b| { a - b })
+        Self::element_wise_operation(m1, m2, |a, b| a - b)
     }
 
     fn naive_multiply(m1: Self, m2: Self) -> Self {
-        Self::element_wise_operation(m1, m2, |a, b| { a * b })
+        Self::element_wise_operation(m1, m2, |a, b| a * b)
     }
 
     fn multiply(m1: Self, m2: Self) -> Self {
@@ -101,11 +101,10 @@ impl Matrix {
     }
 
     fn derivative(&self) -> Self {
-        let result = 
-            self
+        let result = self
             .data
             .iter()
-            .map(|row| { row.iter().map(calc::sigmoid_derivative).collect() })
+            .map(|row| row.iter().map(calc::sigmoid_derivative).collect())
             .collect();
 
         Self { data: result }
@@ -126,7 +125,10 @@ struct NeuralNetwork {
 impl NeuralNetwork {
     fn new(layers: Vec<Layer>) -> Self {
         Self {
-            layers: layers.into_iter().map(|layer| Rc::new(RefCell::new(layer))).collect(),
+            layers: layers
+                .into_iter()
+                .map(|layer| Rc::new(RefCell::new(layer)))
+                .collect(),
         }
     }
 
@@ -158,18 +160,16 @@ impl NeuralNetwork {
 
         // Adjust weights in Layers
         for (idx, layer) in self.layers.iter().enumerate().rev() {
-            let input_to_layer = if idx == 0 { input.clone() } else { forwarded[idx - 1].clone() };
+            let input_to_layer = if idx == 0 {
+                input.clone()
+            } else {
+                forwarded[idx - 1].clone()
+            };
 
-            let delta = Matrix::naive_multiply(
-                forwarded[idx].clone().derivative(),
-                error.clone()
-            );
+            let delta = Matrix::naive_multiply(forwarded[idx].clone().derivative(), error.clone());
 
             if idx > 0 {
-                error = Matrix::multiply(
-                    delta.clone(),
-                    layer.borrow().matrix.clone()
-                );
+                error = Matrix::multiply(delta.clone(), layer.borrow().matrix.clone());
             }
 
             self.adjust(input_to_layer, layer.clone(), delta);
@@ -179,12 +179,13 @@ impl NeuralNetwork {
     fn apply_activation(&self, input: Matrix, layer: Rc<RefCell<Layer>>) {
         let mut layer_borrow = layer.borrow_mut();
 
-        layer_borrow.forwarded = Some(
-            Matrix::new(
-                Matrix::multiply(input, layer_borrow.matrix.transpose())
-                .data.iter().map(|row| { row.iter().map(calc::sigmoid).collect() }).collect()
-            )
-        )
+        layer_borrow.forwarded = Some(Matrix::new(
+            Matrix::multiply(input, layer_borrow.matrix.transpose())
+                .data
+                .iter()
+                .map(|row| row.iter().map(calc::sigmoid).collect())
+                .collect(),
+        ))
     }
 
     fn adjust(&self, input: Matrix, layer: Rc<RefCell<Layer>>, delta: Matrix) {
@@ -192,8 +193,7 @@ impl NeuralNetwork {
 
         let mut layer_borrow = layer.borrow_mut();
 
-        layer_borrow.matrix = 
-            Matrix::add(layer_borrow.matrix.clone(), adjustment.transpose())
+        layer_borrow.matrix = Matrix::add(layer_borrow.matrix.clone(), adjustment.transpose())
     }
 }
 
@@ -237,9 +237,7 @@ fn main() {
         // Output Layer
         Layer {
             matrix: Matrix {
-                data: vec![
-                    vec![-0.5910955, 0.75623487, -0.94522481, 0.64093502],
-                ],
+                data: vec![vec![-0.5910955, 0.75623487, -0.94522481, 0.64093502]],
             },
             forwarded: None,
         },
@@ -247,18 +245,22 @@ fn main() {
 
     let network = NeuralNetwork::new(layers); // 3 layers (input, hidden, output)
 
-    let input = Matrix { data: vec![
-        vec![0.0, 0.0, 1.0], 
-        vec![0.0, 0.0, 0.0],
-        vec![0.0, 1.0, 1.0], 
-        vec![0.0, 1.0, 0.0], 
-        vec![1.0, 0.0, 1.0], 
-        vec![1.0, 0.0, 0.0], 
-        vec![0.6, 0.6, 0.0],
-        vec![0.6, 0.6, 1.0],
-    ]};
+    let input = Matrix {
+        data: vec![
+            vec![0.0, 0.0, 1.0],
+            vec![0.0, 0.0, 0.0],
+            vec![0.0, 1.0, 1.0],
+            vec![0.0, 1.0, 0.0],
+            vec![1.0, 0.0, 1.0],
+            vec![1.0, 0.0, 0.0],
+            vec![0.6, 0.6, 0.0],
+            vec![0.6, 0.6, 1.0],
+        ],
+    };
 
-    let targets = Matrix { data: vec![vec![0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0]] };
+    let targets = Matrix {
+        data: vec![vec![0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0]],
+    };
 
     for idx in 0..10_000 {
         println!("Iteration: {}", idx);
@@ -266,7 +268,11 @@ fn main() {
     }
 
     println!(
-        "predict([[1.0, 1.0, 0.0]]) = {:?}", 
-        network.predict(Matrix { data: vec![vec![1.0, 1.0, 0.0]] }).data
+        "predict([[1.0, 1.0, 0.0]]) = {:?}",
+        network
+            .predict(Matrix {
+                data: vec![vec![1.0, 1.0, 0.0]]
+            })
+            .data
     );
 }
