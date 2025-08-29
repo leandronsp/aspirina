@@ -1,6 +1,8 @@
 mod training {
-    pub mod xor_gate;
     pub mod and_gate;
+    pub mod nand_gate;
+    pub mod or_gate;
+    pub mod xor_gate;
 }
 
 use std::io::{self, Write};
@@ -12,18 +14,22 @@ fn main() {
     println!("Available training scenarios:");
     println!("1. XOR Gate");
     println!("2. AND Gate");
+    println!("3. OR Gate");
+    println!("4. NAND Gate");
     println!("0. Exit");
     println!();
-    print!("Select a scenario (0-2): ");
+    print!("Select a scenario (0-4): ");
     io::stdout().flush().unwrap();
 
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
-    
+
     match input.trim() {
         "1" => training::xor_gate::run(),
         "2" => training::and_gate::run(),
+        "3" => training::or_gate::run(),
+        "4" => training::nand_gate::run(),
         "0" => println!("Goodbye!"),
-        _ => println!("Invalid selection. Please run again and choose 0-2."),
+        _ => println!("Invalid selection. Please run again and choose 0-4."),
     }
 }
