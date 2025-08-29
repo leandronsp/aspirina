@@ -62,72 +62,71 @@ cargo fmt
 cargo clippy
 ```
 
-## What the Neural Network Does
+## Training Samples
 
-The main program (`cargo run`) demonstrates a simple feedforward neural network learning a **XOR gate** - a classic benchmark problem for neural networks.
+Run `cargo run` to access an interactive menu with logic gate training scenarios and computer component tests.
 
-### What is a XOR Gate?
-XOR (exclusive OR) is a logical operation that outputs:
-- **1** when inputs are different (0,1 or 1,0)
-- **0** when inputs are the same (0,0 or 1,1)
+### Logic Gates (Training Scenarios 1-7)
+Each gate is trained with 10,000 epochs to learn boolean logic operations:
 
-| Input A | Input B | XOR Output |
-|---------|---------|------------|
-|    0    |    0    |     0      |
-|    0    |    1    |     1      |
-|    1    |    0    |     1      |
-|    1    |    1    |     0      |
+| Gate | Truth Table | Description |
+|------|------------|-------------|
+| XOR  | 0⊕0=0, 0⊕1=1, 1⊕0=1, 1⊕1=0 | Outputs 1 when inputs differ |
+| AND  | 0∧0=0, 0∧1=0, 1∧0=0, 1∧1=1 | Outputs 1 when both inputs are 1 |
+| OR   | 0∨0=0, 0∨1=1, 1∨0=1, 1∨1=1 | Outputs 1 when at least one input is 1 |
+| NAND | ¬(A∧B) | Inverted AND |
+| NOT  | ¬0=1, ¬1=0 | Inverts single input |
+| NOR  | ¬(A∨B) | Inverted OR |
+| XNOR | ¬(A⊕B) | Outputs 1 when inputs are equal |
 
-The XOR problem is significant because it cannot be solved by a simple linear classifier - it requires a neural network with at least one hidden layer.
+### Computer Components (Tests 8-11)
+Neural networks trained as logic gates are combined to build arithmetic circuits:
 
-### Architecture
-- **Input Layer**: 3 neurons (accepts 3D input vectors)
-- **Hidden Layers**: 2 hidden layers with 4 neurons each
-- **Output Layer**: 1 neuron (binary classification)
-- **Activation**: Sigmoid function throughout
+**Test 8: All Logic Gates** - Validates all 7 gates achieve correct truth tables  
+**Test 9: Half Adder** - Adds two bits producing sum (XOR) and carry (AND)  
+**Test 10: Full Adder** - Adds three bits using two half adders  
+**Test 11: 4-bit ALU** - Performs Add/Subtract/AND/OR/XOR on 4-bit numbers
 
-### Training Data
-The network learns from 8 training examples with 3 features each:
-```
-Input:  [0.0, 0.0, 1.0] → Target: 0.0
-Input:  [0.0, 0.0, 0.0] → Target: 0.0  
-Input:  [0.0, 1.0, 1.0] → Target: 1.0
-Input:  [0.0, 1.0, 0.0] → Target: 1.0
-Input:  [1.0, 0.0, 1.0] → Target: 1.0
-Input:  [1.0, 0.0, 0.0] → Target: 1.0
-Input:  [0.6, 0.6, 0.0] → Target: 0.0
-Input:  [0.6, 0.6, 1.0] → Target: 0.0
-```
+## Neural Computer Architecture
 
-### Learning Process
-- Trains for 100,000 iterations using backpropagation
-- Adjusts weights to minimize prediction error
-- Shows training progress with iteration numbers
+Aspirina implements a hypothetical 4-bit computer built entirely from neural networks trained to behave as logic gates. Starting from basic boolean operations, we construct increasingly complex components following traditional computer architecture principles.
 
-### Verification
-After training, the network makes a prediction on `[1.0, 1.0, 0.0]`. 
-This implements a **XOR gate** on the first two inputs - the network learns to output 1.0 when exactly one of the first two inputs is 1.0, and 0.0 when both are the same (both 0 or both 1).
+The foundation consists of neural networks trained to mimic the 7 fundamental logic gates. Each network learns through backpropagation to produce the correct boolean outputs for its truth table. These gates combine to form arithmetic circuits: half adders compute single-bit addition with carry, full adders chain together for multi-bit arithmetic, and finally a 4-bit ALU performs complete arithmetic and logic operations.
 
-For the test case `[1.0, 1.0, 0.0]`, the expected output should be close to **0.0** (since both inputs are 1, XOR gives 0).
+The architecture follows Von Neumann principles with planned components including 16 words of 4-bit memory, registers for accumulator and program counter, and a simple instruction set with operations like LOAD, STORE, ADD, SUB, and JUMP. The CPU will implement a fetch-decode-execute cycle, reading instructions from memory, decoding them, and executing operations using the neural ALU.
 
-The closer the final prediction is to 0.0, the better the network has learned the XOR pattern!
+This demonstrates that neural networks can learn to perform deterministic computation, essentially building a computer from learned logic rather than fixed silicon gates. Each component maintains the same training approach: 10,000 epochs of backpropagation to achieve near-perfect accuracy on boolean operations.
 
 ## Project Structure
 
 ```
 src/
-├── main.rs           # Main training loop and demo
+├── main.rs           # Interactive menu for training and testing
 ├── lib.rs            # Module declarations
 ├── calc.rs           # Activation functions (sigmoid, tanh)
-├── matrix.rs         # Matrix operations
+├── matrix.rs         # Matrix operations with operator overloading
 ├── layer.rs          # Neural network layer
-└── neural_network.rs # Complete neural network implementation
+├── neural_network.rs # Core neural network with backpropagation
+├── training/         # Logic gate training scenarios
+│   ├── and_gate.rs
+│   ├── nand_gate.rs
+│   ├── nor_gate.rs
+│   ├── not_gate.rs
+│   ├── or_gate.rs
+│   ├── xnor_gate.rs
+│   └── xor_gate.rs
+└── computer/         # Neural computer components
+    ├── mod.rs
+    ├── gates.rs      # All 7 logic gates consolidated
+    ├── half_adder.rs # XOR + AND gates
+    ├── full_adder.rs # 2 half adders + OR gate
+    └── alu.rs        # 4-bit ALU with arithmetic/logic ops
 
 tests/
-├── calc_test.rs           # Tests for activation functions
-├── matrix_test.rs         # Tests for matrix operations
-├── layer_test.rs          # Tests for layer functionality
-└── neural_network_test.rs # Tests for neural network
+├── calc_test.rs
+├── matrix_test.rs
+├── layer_test.rs
+└── neural_network_test.rs
 ```
 
 ----
