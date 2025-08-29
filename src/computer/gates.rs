@@ -15,6 +15,7 @@ pub enum GateType {
 }
 
 /// A neural logic gate that can perform any of the 7 basic boolean operations
+#[derive(Debug)]
 pub struct LogicGate {
     gate_type: GateType,
     network: NeuralNetwork,
@@ -42,7 +43,7 @@ impl LogicGate {
             GateType::NOT => {
                 let input = Matrix::new(vec![vec![0.0], vec![1.0]]);
                 let targets = Matrix::new(vec![vec![1.0, 0.0]]);
-                
+
                 for _ in 0..epochs {
                     self.network.train(input.clone(), targets.clone());
                 }
@@ -174,14 +175,19 @@ fn create_not_network() -> NeuralNetwork {
 /// Convenience function to train and test all gates
 pub fn test_all_gates() {
     let gates = [
-        GateType::AND, GateType::NAND, GateType::OR, GateType::NOR, 
-        GateType::XOR, GateType::XNOR, GateType::NOT
+        GateType::AND,
+        GateType::NAND,
+        GateType::OR,
+        GateType::NOR,
+        GateType::XOR,
+        GateType::XNOR,
+        GateType::NOT,
     ];
 
     for gate_type in gates.iter() {
         println!("=== Testing {:?} Gate ===", gate_type);
         let gate = LogicGate::new(gate_type.clone());
-        
+
         // Train the gate
         gate.train(10_000);
 
@@ -189,24 +195,40 @@ pub fn test_all_gates() {
         match gate_type {
             GateType::NOT => {
                 let test_cases = [(vec![0.0], "NOT 0", 1.0), (vec![1.0], "NOT 1", 0.0)];
-                
+
                 for (inputs, description, expected) in test_cases.iter() {
                     let output = gate.compute(inputs.clone());
-                    let success = if *expected > 0.5 { output > 0.5 } else { output < 0.5 };
-                    println!("{}: {:.4} (expected: {:.1}) {}", 
-                             description, output, expected, 
-                             if success { "✓" } else { "✗" });
+                    let success = if *expected > 0.5 {
+                        output > 0.5
+                    } else {
+                        output < 0.5
+                    };
+                    println!(
+                        "{}: {:.4} (expected: {:.1}) {}",
+                        description,
+                        output,
+                        expected,
+                        if success { "✓" } else { "✗" }
+                    );
                 }
             }
             _ => {
                 let test_cases = get_test_cases(gate_type);
-                
+
                 for (inputs, description, expected) in test_cases.iter() {
                     let output = gate.compute(inputs.clone());
-                    let success = if *expected > 0.5 { output > 0.5 } else { output < 0.5 };
-                    println!("{}: {:.4} (expected: {:.1}) {}", 
-                             description, output, expected, 
-                             if success { "✓" } else { "✗" });
+                    let success = if *expected > 0.5 {
+                        output > 0.5
+                    } else {
+                        output < 0.5
+                    };
+                    println!(
+                        "{}: {:.4} (expected: {:.1}) {}",
+                        description,
+                        output,
+                        expected,
+                        if success { "✓" } else { "✗" }
+                    );
                 }
             }
         }
@@ -255,3 +277,4 @@ fn get_test_cases(gate_type: &GateType) -> Vec<(Vec<f64>, &'static str, f64)> {
         GateType::NOT => vec![], // Handled separately
     }
 }
+
