@@ -79,4 +79,3 @@ fn create_network() -> NeuralNetwork {
 
     NeuralNetwork::new(layers)
 }
-

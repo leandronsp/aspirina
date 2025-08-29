@@ -1,7 +1,10 @@
 mod training {
     pub mod and_gate;
     pub mod nand_gate;
+    pub mod nor_gate;
+    pub mod not_gate;
     pub mod or_gate;
+    pub mod xnor_gate;
     pub mod xor_gate;
 }
 
@@ -16,9 +19,12 @@ fn main() {
     println!("2. AND Gate");
     println!("3. OR Gate");
     println!("4. NAND Gate");
+    println!("5. NOT Gate");
+    println!("6. NOR Gate");
+    println!("7. XNOR Gate");
     println!("0. Exit");
     println!();
-    print!("Select a scenario (0-4): ");
+    print!("Select a scenario (0-7): ");
     io::stdout().flush().unwrap();
 
     let mut input = String::new();
@@ -29,7 +35,10 @@ fn main() {
         "2" => training::and_gate::run(),
         "3" => training::or_gate::run(),
         "4" => training::nand_gate::run(),
+        "5" => training::not_gate::run(),
+        "6" => training::nor_gate::run(),
+        "7" => training::xnor_gate::run(),
         "0" => println!("Goodbye!"),
-        _ => println!("Invalid selection. Please run again and choose 0-4."),
+        _ => println!("Invalid selection. Please run again and choose 0-7."),
     }
 }

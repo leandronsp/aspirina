@@ -3,19 +3,15 @@ use aspirina::matrix::Matrix;
 use aspirina::neural_network::NeuralNetwork;
 
 pub fn run() {
-    println!("=== NAND Gate Training ===");
-    println!("Training neural network to learn NAND logic gate...");
+    println!("=== NOT Gate Training ===");
+    println!("Training neural network to learn NOT logic gate...");
 
     let network = create_network();
 
-    let input = Matrix::new(vec![
-        vec![0.0, 0.0],
-        vec![0.0, 1.0],
-        vec![1.0, 0.0],
-        vec![1.0, 1.0],
-    ]);
+    // NOT gate: single input, inverted output
+    let input = Matrix::new(vec![vec![0.0], vec![1.0]]);
 
-    let targets = Matrix::new(vec![vec![1.0, 1.0, 1.0, 0.0]]);
+    let targets = Matrix::new(vec![vec![1.0, 0.0]]);
 
     // Training loop with progress
     let epochs = 10_000;
@@ -27,24 +23,15 @@ pub fn run() {
     }
 
     println!("\n=== Training Complete ===");
-    println!("Testing NAND gate logic:");
+    println!("Testing NOT gate logic:");
 
-    // Test all NAND combinations
-    let test_cases = [
-        (vec![0.0, 0.0], "0 NAND 0"),
-        (vec![0.0, 1.0], "0 NAND 1"),
-        (vec![1.0, 0.0], "1 NAND 0"),
-        (vec![1.0, 1.0], "1 NAND 1"),
-    ];
+    // Test all NOT combinations
+    let test_cases = [(vec![0.0], "NOT 0"), (vec![1.0], "NOT 1")];
 
     for (input_vals, description) in test_cases {
         let result = network.predict(Matrix::new(vec![input_vals.clone()]));
         let output = result.data[0][0];
-        let expected = if input_vals[0] > 0.5 && input_vals[1] > 0.5 {
-            0.0 // NAND is NOT AND
-        } else {
-            1.0
-        };
+        let expected = if input_vals[0] == 0.0 { 1.0 } else { 0.0 };
 
         println!(
             "{} = {:.4} (expected: {:.1})",
@@ -66,14 +53,13 @@ pub fn run() {
 }
 
 fn create_network() -> NeuralNetwork {
-    // NAND gate is inverted AND - high unless both inputs are high
+    // NOT gate with single input - simplified architecture
     let layers = vec![
         Layer::new(Matrix::new(vec![
-            vec![-0.8, -0.8], // Negative weights for NAND logic
-            vec![0.5, 0.5],   // Positive bias neuron
-            vec![-0.3, 0.3],  // Mixed weights for complexity
+            vec![-1.5], // Strong negative weight to invert
+            vec![0.8],  // Helper neuron
         ])),
-        Layer::new(Matrix::new(vec![vec![-1.2, 1.5, 0.8]])),
+        Layer::new(Matrix::new(vec![vec![1.2, -0.6]])),
     ];
 
     NeuralNetwork::new(layers)
