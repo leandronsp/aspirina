@@ -11,6 +11,7 @@ mod training {
 use aspirina::computer::gates;
 use aspirina::computer::half_adder;
 use aspirina::computer::full_adder;
+use aspirina::computer::alu;
 use std::io::{self, Write};
 
 fn main() {
@@ -30,9 +31,10 @@ fn main() {
     println!("8. Test All Logic Gates");
     println!("9. Test Half Adder");
     println!("10. Test Full Adder");
+    println!("11. Test 4-bit ALU");
     println!("0. Exit");
     println!();
-    print!("Select a scenario (0-10): ");
+    print!("Select a scenario (0-11): ");
     io::stdout().flush().unwrap();
 
     let mut input = String::new();
@@ -58,7 +60,11 @@ fn main() {
             println!("=== Neural Computer Full Adder Test ===");
             full_adder::FullAdder::new().test();
         }
+        "11" => {
+            println!("=== Neural Computer 4-bit ALU Test ===");
+            alu::ALU::new().test();
+        }
         "0" => println!("Goodbye!"),
-        _ => println!("Invalid selection. Please run again and choose 0-10."),
+        _ => println!("Invalid selection. Please run again and choose 0-11."),
     }
 }
