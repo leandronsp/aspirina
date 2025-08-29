@@ -42,7 +42,7 @@ impl NeuralNetwork {
     }
 
     fn back_propagation(&self, forwarded: Vec<Matrix>, input: Matrix, targets: Matrix) {
-        let mut error = Matrix::subtract(targets.transpose(), forwarded.last().unwrap().clone());
+        let mut error = targets.transpose() - forwarded.last().unwrap().clone();
 
         for (idx, layer) in self.layers.iter().enumerate().rev() {
             let input_to_layer = if idx == 0 {
@@ -54,7 +54,7 @@ impl NeuralNetwork {
             let delta = Matrix::naive_multiply(forwarded[idx].clone().derivative(), error.clone());
 
             if idx > 0 {
-                error = Matrix::multiply(delta.clone(), layer.borrow().matrix.clone());
+                error = delta.clone() * layer.borrow().matrix.clone();
             }
 
             self.adjust(input_to_layer, layer.clone(), delta);
@@ -65,7 +65,7 @@ impl NeuralNetwork {
         let mut layer_borrow = layer.borrow_mut();
 
         layer_borrow.forwarded = Some(Matrix::new(
-            Matrix::multiply(input, layer_borrow.matrix.transpose())
+            (input * layer_borrow.matrix.transpose())
                 .data
                 .iter()
                 .map(|row| row.iter().map(Calc::sigmoid).collect())
@@ -74,9 +74,8 @@ impl NeuralNetwork {
     }
 
     fn adjust(&self, input: Matrix, layer: Rc<RefCell<Layer>>, delta: Matrix) {
-        let adjustment = Matrix::multiply(input.transpose(), delta.clone());
+        let adjustment = input.transpose() * delta.clone();
         let mut layer_borrow = layer.borrow_mut();
-        layer_borrow.matrix =
-            Matrix::matrix_add(layer_borrow.matrix.clone(), adjustment.transpose())
+        layer_borrow.matrix = layer_borrow.matrix.clone() + adjustment.transpose()
     }
 }

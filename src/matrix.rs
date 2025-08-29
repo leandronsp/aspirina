@@ -1,5 +1,5 @@
 use crate::calc::Calc;
-use std::ops::Add;
+use std::ops::{Add, Mul, Sub};
 
 #[derive(Debug, Clone)]
 pub struct Matrix {
@@ -45,10 +45,6 @@ impl Matrix {
         }
 
         Self { data: result }
-    }
-
-    pub fn matrix_add(m1: Self, m2: Self) -> Self {
-        Self::element_wise_operation(m1, m2, |a, b| a + b)
     }
 
     pub fn subtract(m1: Self, m2: Self) -> Self {
@@ -98,5 +94,21 @@ impl Add for Matrix {
 
     fn add(self, other: Self) -> Self {
         Self::element_wise_operation(self, other, |a, b| a + b)
+    }
+}
+
+impl Sub for Matrix {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self {
+        Self::element_wise_operation(self, other, |a, b| a - b)
+    }
+}
+
+impl Mul for Matrix {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        Self::multiply(self, other)
     }
 }

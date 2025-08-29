@@ -27,7 +27,7 @@ fn multiply_2x2_matrices() {
 
     let m2 = Matrix::new(vec![vec![2.0, 0.0], vec![1.0, 2.0]]);
 
-    let result = Matrix::multiply(m1, m2);
+    let result = m1 * m2;
 
     assert_eq!(result.data, vec![vec![4.0, 4.0], vec![10.0, 8.0],]);
 }
@@ -38,7 +38,7 @@ fn multiply_2x3_with_3x2() {
 
     let m2 = Matrix::new(vec![vec![7.0, 8.0], vec![9.0, 10.0], vec![11.0, 12.0]]);
 
-    let result = Matrix::multiply(m1, m2);
+    let result = m1 * m2;
 
     assert_eq!(result.data, vec![vec![58.0, 64.0], vec![139.0, 154.0],]);
 }
@@ -74,7 +74,7 @@ fn add_same_size_matrices() {
 
     let m2 = Matrix::new(vec![vec![5.0, 6.0], vec![7.0, 8.0]]);
 
-    let result = Matrix::matrix_add(m1, m2);
+    let result = m1 + m2;
 
     assert_eq!(result.data, vec![vec![6.0, 8.0], vec![10.0, 12.0],]);
 }
@@ -85,7 +85,7 @@ fn subtract_same_size_matrices() {
 
     let m2 = Matrix::new(vec![vec![1.0, 2.0], vec![3.0, 4.0]]);
 
-    let result = Matrix::subtract(m1, m2);
+    let result = m1 - m2;
 
     assert_eq!(result.data, vec![vec![4.0, 4.0], vec![4.0, 4.0],]);
 }
