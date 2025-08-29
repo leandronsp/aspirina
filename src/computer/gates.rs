@@ -277,4 +277,3 @@ fn get_test_cases(gate_type: &GateType) -> Vec<(Vec<f64>, &'static str, f64)> {
         GateType::NOT => vec![], // Handled separately
     }
 }
-

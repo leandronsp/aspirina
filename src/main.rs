@@ -8,10 +8,10 @@ mod training {
     pub mod xor_gate;
 }
 
+use aspirina::computer::alu;
+use aspirina::computer::full_adder;
 use aspirina::computer::gates;
 use aspirina::computer::half_adder;
-use aspirina::computer::full_adder;
-use aspirina::computer::alu;
 use std::io::{self, Write};
 
 fn main() {

@@ -23,7 +23,7 @@ impl FullAdder {
         let half_adder1 = HalfAdder::new();
         let half_adder2 = HalfAdder::new();
         let or_gate = LogicGate::new(GateType::OR);
-        
+
         // Train the OR gate
         or_gate.train(10_000);
 
@@ -38,10 +38,10 @@ impl FullAdder {
     pub fn compute(&self, a: bool, b: bool, carry_in: bool) -> FullAdderResult {
         // First half adder: A + B
         let result1 = self.half_adder1.compute(a, b);
-        
+
         // Second half adder: (A XOR B) + Cin
         let result2 = self.half_adder2.compute(result1.sum, carry_in);
-        
+
         // Final carry: Carry1 OR Carry2
         let carry1_f = if result1.carry { 1.0 } else { 0.0 };
         let carry2_f = if result2.carry { 1.0 } else { 0.0 };

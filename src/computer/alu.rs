@@ -14,9 +14,9 @@ pub enum ALUOperation {
 /// 4-bit ALU result
 #[derive(Debug, PartialEq)]
 pub struct ALUResult {
-    pub result: u8,    // 4-bit result (0-15)
-    pub carry: bool,   // Carry/overflow flag
-    pub zero: bool,    // Zero flag
+    pub result: u8,  // 4-bit result (0-15)
+    pub carry: bool, // Carry/overflow flag
+    pub zero: bool,  // Zero flag
 }
 
 /// 4-bit Arithmetic Logic Unit built from full adders and logic gates
@@ -71,8 +71,13 @@ impl ALU {
         }
 
         ALU {
-            adder0, adder1, adder2, adder3,
-            and_gates, or_gates, xor_gates,
+            adder0,
+            adder1,
+            adder2,
+            adder3,
+            and_gates,
+            or_gates,
+            xor_gates,
         }
     }
 
@@ -103,7 +108,7 @@ impl ALU {
         let result3 = self.adder3.compute(a_bits[3], b_bits[3], result2.carry);
 
         let result_bits = [result0.sum, result1.sum, result2.sum, result3.sum];
-        let result_value = self.from_bits(result_bits);
+        let result_value = self.bits_to_u8(result_bits);
 
         ALUResult {
             result: result_value,
@@ -117,7 +122,7 @@ impl ALU {
         // Two's complement: invert bits and add 1
         let b_complement = (!b) & 0x0F;
         let b_plus_one = self.add(b_complement, 1);
-        
+
         // A + (~B + 1)
         self.add(a, b_plus_one.result)
     }
@@ -126,7 +131,7 @@ impl ALU {
     fn bitwise_and(&self, a: u8, b: u8) -> ALUResult {
         let a_bits = self.to_bits(a);
         let b_bits = self.to_bits(b);
-        
+
         let mut result_bits = [false; 4];
         for i in 0..4 {
             let a_f = if a_bits[i] { 1.0 } else { 0.0 };
@@ -135,7 +140,7 @@ impl ALU {
             result_bits[i] = output > 0.5;
         }
 
-        let result_value = self.from_bits(result_bits);
+        let result_value = self.bits_to_u8(result_bits);
         ALUResult {
             result: result_value,
             carry: false,
@@ -147,7 +152,7 @@ impl ALU {
     fn bitwise_or(&self, a: u8, b: u8) -> ALUResult {
         let a_bits = self.to_bits(a);
         let b_bits = self.to_bits(b);
-        
+
         let mut result_bits = [false; 4];
         for i in 0..4 {
             let a_f = if a_bits[i] { 1.0 } else { 0.0 };
@@ -156,7 +161,7 @@ impl ALU {
             result_bits[i] = output > 0.5;
         }
 
-        let result_value = self.from_bits(result_bits);
+        let result_value = self.bits_to_u8(result_bits);
         ALUResult {
             result: result_value,
             carry: false,
@@ -168,7 +173,7 @@ impl ALU {
     fn bitwise_xor(&self, a: u8, b: u8) -> ALUResult {
         let a_bits = self.to_bits(a);
         let b_bits = self.to_bits(b);
-        
+
         let mut result_bits = [false; 4];
         for i in 0..4 {
             let a_f = if a_bits[i] { 1.0 } else { 0.0 };
@@ -177,7 +182,7 @@ impl ALU {
             result_bits[i] = output > 0.5;
         }
 
-        let result_value = self.from_bits(result_bits);
+        let result_value = self.bits_to_u8(result_bits);
         ALUResult {
             result: result_value,
             carry: false,
@@ -196,19 +201,27 @@ impl ALU {
     }
 
     /// Convert array of 4 bits to u8 (LSB first)
-    fn from_bits(&self, bits: [bool; 4]) -> u8 {
+    fn bits_to_u8(&self, bits: [bool; 4]) -> u8 {
         let mut result = 0u8;
-        if bits[0] { result |= 0x01; }
-        if bits[1] { result |= 0x02; }
-        if bits[2] { result |= 0x04; }
-        if bits[3] { result |= 0x08; }
+        if bits[0] {
+            result |= 0x01;
+        }
+        if bits[1] {
+            result |= 0x02;
+        }
+        if bits[2] {
+            result |= 0x04;
+        }
+        if bits[3] {
+            result |= 0x08;
+        }
         result
     }
 
     /// Test the ALU with various operations
     pub fn test(&self) {
         println!("=== 4-bit ALU Test ===");
-        
+
         let test_cases = [
             (5, 3, ALUOperation::Add, "5 + 3"),
             (7, 2, ALUOperation::Add, "7 + 2"),
@@ -222,7 +235,7 @@ impl ALU {
 
         for (a, b, op, description) in test_cases.iter() {
             let result = self.compute(*a, *b, op.clone());
-            
+
             let expected = match op {
                 ALUOperation::Add => (a + b) & 0x0F,
                 ALUOperation::Subtract => (a.wrapping_sub(*b)) & 0x0F,
@@ -232,7 +245,7 @@ impl ALU {
             };
 
             let correct = result.result == expected;
-            
+
             println!(
                 "{} = {} (expected: {}) {} [C:{} Z:{}]",
                 description,
