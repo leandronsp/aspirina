@@ -12,20 +12,10 @@
 A neural network library written in Rust.
 Inspired by [leandronsp/morphine](https://github.com/leandronsp/morphine).
 
-## Setup & Requirements
+## Requirements
 
-### Install Rust
-If you don't have Rust installed:
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source ~/.cargo/env
-```
-
-### Verify Installation
-```bash
-rustc --version
-cargo --version
-```
+* Rust
+* Cargo
 
 ## Development Commands
 
@@ -34,7 +24,7 @@ cargo --version
 cargo build
 ```
 
-### Run the neural network training
+### Run the CLI menu for training samples
 ```bash
 cargo run
 ```
@@ -42,14 +32,6 @@ cargo run
 ### Run all tests
 ```bash
 cargo test
-```
-
-### Run tests for a specific module
-```bash
-cargo test calc_test
-cargo test matrix_test
-cargo test layer_test
-cargo test neural_network_test
 ```
 
 ### Format code
