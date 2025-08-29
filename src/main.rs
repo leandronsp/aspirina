@@ -8,13 +8,15 @@ mod training {
     pub mod xor_gate;
 }
 
+use aspirina::computer::gates;
 use std::io::{self, Write};
 
 fn main() {
     println!("Aspirina Neural Network Library");
     println!("==============================");
     println!();
-    println!("Available training scenarios:");
+    println!("Available scenarios:");
+    println!("=== Training Scenarios ===");
     println!("1. XOR Gate");
     println!("2. AND Gate");
     println!("3. OR Gate");
@@ -22,9 +24,11 @@ fn main() {
     println!("5. NOT Gate");
     println!("6. NOR Gate");
     println!("7. XNOR Gate");
+    println!("=== Computer Components ===");
+    println!("8. Test All Logic Gates");
     println!("0. Exit");
     println!();
-    print!("Select a scenario (0-7): ");
+    print!("Select a scenario (0-8): ");
     io::stdout().flush().unwrap();
 
     let mut input = String::new();
@@ -38,7 +42,11 @@ fn main() {
         "5" => training::not_gate::run(),
         "6" => training::nor_gate::run(),
         "7" => training::xnor_gate::run(),
+        "8" => {
+            println!("=== Neural Computer Logic Gates Test ===");
+            gates::test_all_gates();
+        }
         "0" => println!("Goodbye!"),
-        _ => println!("Invalid selection. Please run again and choose 0-7."),
+        _ => println!("Invalid selection. Please run again and choose 0-8."),
     }
 }
