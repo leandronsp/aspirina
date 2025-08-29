@@ -10,6 +10,7 @@ mod training {
 
 use aspirina::computer::gates;
 use aspirina::computer::half_adder;
+use aspirina::computer::full_adder;
 use std::io::{self, Write};
 
 fn main() {
@@ -28,9 +29,10 @@ fn main() {
     println!("=== Computer Components ===");
     println!("8. Test All Logic Gates");
     println!("9. Test Half Adder");
+    println!("10. Test Full Adder");
     println!("0. Exit");
     println!();
-    print!("Select a scenario (0-9): ");
+    print!("Select a scenario (0-10): ");
     io::stdout().flush().unwrap();
 
     let mut input = String::new();
@@ -52,7 +54,11 @@ fn main() {
             println!("=== Neural Computer Half Adder Test ===");
             half_adder::HalfAdder::new().test();
         }
+        "10" => {
+            println!("=== Neural Computer Full Adder Test ===");
+            full_adder::FullAdder::new().test();
+        }
         "0" => println!("Goodbye!"),
-        _ => println!("Invalid selection. Please run again and choose 0-8."),
+        _ => println!("Invalid selection. Please run again and choose 0-10."),
     }
 }
