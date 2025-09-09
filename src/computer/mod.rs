@@ -1,4 +1,5 @@
 pub mod alu;
+pub mod assembler;
 pub mod cpu;
 pub mod full_adder;
 pub mod gates;

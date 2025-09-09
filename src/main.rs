@@ -33,9 +33,10 @@ fn main() {
     println!("12. Test Memory");
     println!("13. Test Registers");
     println!("14. Test CPU");
+    println!("15. Test Assembler");
     println!("0. Exit");
     println!();
-    print!("Select a scenario (0-14): ");
+    print!("Select a scenario (0-15): ");
     io::stdout().flush().unwrap();
 
     let mut input = String::new();
@@ -77,7 +78,11 @@ fn main() {
             println!("=== Neural Computer CPU Test ===");
             computer::cpu::test();
         }
+        "15" => {
+            println!("=== Neural Computer Assembler Test ===");
+            computer::assembler::test();
+        }
         "0" => println!("Goodbye!"),
-        _ => println!("Invalid selection. Please run again and choose 0-14."),
+        _ => println!("Invalid selection. Please run again and choose 0-15."),
     }
 }
