@@ -30,9 +30,12 @@ fn main() {
     println!("9. Test Half Adder");
     println!("10. Test Full Adder");
     println!("11. Test 4-bit ALU");
+    println!("12. Test Memory");
+    println!("13. Test Registers");
+    println!("14. Test CPU");
     println!("0. Exit");
     println!();
-    print!("Select a scenario (0-11): ");
+    print!("Select a scenario (0-14): ");
     io::stdout().flush().unwrap();
 
     let mut input = String::new();
@@ -62,7 +65,19 @@ fn main() {
             println!("=== Neural Computer 4-bit ALU Test ===");
             computer::alu::test();
         }
+        "12" => {
+            println!("=== Neural Computer Memory Test ===");
+            computer::memory::test();
+        }
+        "13" => {
+            println!("=== Neural Computer Registers Test ===");
+            computer::registers::test();
+        }
+        "14" => {
+            println!("=== Neural Computer CPU Test ===");
+            computer::cpu::test();
+        }
         "0" => println!("Goodbye!"),
-        _ => println!("Invalid selection. Please run again and choose 0-11."),
+        _ => println!("Invalid selection. Please run again and choose 0-14."),
     }
 }
