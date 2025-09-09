@@ -121,6 +121,37 @@ tests/
 └── neural_network_test.rs
 ```
 
+## Usage as Dependency
+
+Add to your `Cargo.toml`:
+
+```toml
+[dependencies]
+aspirina = "0.1.0"
+```
+
+Example training a XOR gate:
+
+```rust
+use aspirina::{matrix::Matrix, neural_network::NeuralNetwork};
+
+let input = Matrix::new(vec![
+    vec![0.0, 0.0], vec![0.0, 1.0], 
+    vec![1.0, 0.0], vec![1.0, 1.0],
+]);
+let expected = Matrix::new(vec![
+    vec![0.0], vec![1.0], vec![1.0], vec![0.0],
+]);
+
+let mut network = NeuralNetwork::new(vec![2, 3, 1]);
+for _ in 0..10000 {
+    network.train(&input, &expected, 0.5);
+}
+
+let result = network.predict(&input);
+println!("XOR results: {:?}", result.data);
+```
+
 ----
 
 [ASCII art generator](http://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20)
