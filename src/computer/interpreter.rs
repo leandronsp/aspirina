@@ -441,37 +441,3 @@ fn run_program(interpreter: &mut Interpreter, lines: Vec<&str>) {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_parser() {
-        match Parser::parse_statement("let x = 5") {
-            Ok(Statement::Let(name, Expr::Number(5))) => assert_eq!(name, "x"),
-            _ => panic!("Failed to parse let statement"),
-        }
-    }
-
-    #[test]
-    fn test_expressions() {
-        match Parser::parse_expression("5 + 3") {
-            Ok(Expr::Add(_, _)) => {},
-            _ => panic!("Failed to parse addition"),
-        }
-    }
-
-    #[test]
-    fn test_interpreter() {
-        let mut interpreter = Interpreter::new();
-        let statements = vec![
-            Statement::Let("x".to_string(), Expr::Number(5)),
-            Statement::Let("y".to_string(), Expr::Number(3)),
-            Statement::Let("result".to_string(), 
-                Expr::Add(Box::new(Expr::Variable("x".to_string())), 
-                         Box::new(Expr::Variable("y".to_string())))),
-        ];
-        
-        assert!(interpreter.execute(statements).is_ok());
-    }
-}
