@@ -1,5 +1,5 @@
-use crate::computer::full_adder::FullAdder;
-use crate::computer::gates::{GateType, LogicGate};
+use super::full_adder::FullAdder;
+use super::gates::{GateType, LogicGate};
 
 /// 4-bit ALU operations
 #[derive(Debug, Clone, PartialEq)]

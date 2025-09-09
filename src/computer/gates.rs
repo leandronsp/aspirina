@@ -1,6 +1,6 @@
-use crate::layer::Layer;
-use crate::matrix::Matrix;
-use crate::neural_network::NeuralNetwork;
+use aspirina::layer::Layer;
+use aspirina::matrix::Matrix;
+use aspirina::neural_network::NeuralNetwork;
 
 /// Represents all available logic gates
 #[derive(Debug, Clone)]

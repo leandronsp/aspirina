@@ -1,4 +1,4 @@
-use crate::computer::gates::{GateType, LogicGate};
+use super::gates::{GateType, LogicGate};
 
 /// A half adder that computes sum and carry for two bits
 /// Sum = A XOR B, Carry = A AND B

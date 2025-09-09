@@ -8,9 +8,8 @@ mod training {
     pub mod xor_gate;
 }
 
-mod computer {
-    pub use aspirina::computer::*;
-}
+pub mod computer;
+
 use std::io::{self, Write};
 
 fn main() {

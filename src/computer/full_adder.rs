@@ -1,5 +1,5 @@
-use crate::computer::gates::{GateType, LogicGate};
-use crate::computer::half_adder::HalfAdder;
+use super::gates::{GateType, LogicGate};
+use super::half_adder::HalfAdder;
 
 /// A full adder built from two half adders and an OR gate
 /// Full Adder = HalfAdder1(A, B) + HalfAdder2(Sum1, Cin) + OR(Carry1, Carry2)
