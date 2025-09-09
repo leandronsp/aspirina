@@ -84,6 +84,8 @@ impl ALU {
     /// Perform ALU operation on two 4-bit numbers
     pub fn compute(&self, a: u8, b: u8, operation: ALUOperation) -> ALUResult {
         // Ensure inputs are 4-bit
+        // Mask out extra bits, e.g. 0x0F for 4-bit inputs
+        // Example: 0010 0101 -> 0000 0101
         let a = a & 0x0F;
         let b = b & 0x0F;
 
