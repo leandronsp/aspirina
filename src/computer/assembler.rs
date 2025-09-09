@@ -32,7 +32,7 @@ impl Assembler {
         // First pass: collect labels and instructions
         for (line_num, line) in lines.iter().enumerate() {
             let line = line.trim();
-            
+
             // Skip empty lines and comments
             if line.is_empty() || line.starts_with(';') {
                 continue;
@@ -52,7 +52,7 @@ impl Assembler {
             }
 
             let opcode = parts[0].to_uppercase();
-            
+
             // Remove comments from operand if present
             let operand = if parts.len() > 1 {
                 let op_str = parts[1].split(';').next().unwrap_or("").trim();
@@ -84,10 +84,21 @@ impl Assembler {
         if operand.starts_with("0x") || operand.starts_with("0X") {
             let hex_str = &operand[2..];
             u8::from_str_radix(hex_str, 16)
-                .map_err(|_| format!("Invalid hex number at line {}: '{}' (hex part: '{}')", line_num + 1, operand, hex_str))
+                .map_err(|_| {
+                    format!(
+                        "Invalid hex number at line {}: '{}' (hex part: '{}')",
+                        line_num + 1,
+                        operand,
+                        hex_str
+                    )
+                })
                 .and_then(|v| {
                     if v > 15 {
-                        Err(format!("Value {} exceeds 4-bit range (0-15) at line {}", v, line_num + 1))
+                        Err(format!(
+                            "Value {} exceeds 4-bit range (0-15) at line {}",
+                            v,
+                            line_num + 1
+                        ))
                     } else {
                         Ok(v)
                     }
@@ -95,11 +106,16 @@ impl Assembler {
         }
         // Check if it's a decimal number
         else if operand.chars().all(|c| c.is_ascii_digit()) {
-            operand.parse::<u8>()
+            operand
+                .parse::<u8>()
                 .map_err(|_| format!("Invalid number at line {}: '{}'", line_num + 1, operand))
                 .and_then(|v| {
                     if v > 15 {
-                        Err(format!("Value {} exceeds 4-bit range (0-15) at line {}", v, line_num + 1))
+                        Err(format!(
+                            "Value {} exceeds 4-bit range (0-15) at line {}",
+                            v,
+                            line_num + 1
+                        ))
                     } else {
                         Ok(v)
                     }
@@ -107,7 +123,11 @@ impl Assembler {
         }
         // Otherwise treat as label (will be resolved in second pass)
         else {
-            Err(format!("Invalid operand at line {}: '{}' (not a number or valid label)", line_num + 1, operand))
+            Err(format!(
+                "Invalid operand at line {}: '{}' (not a number or valid label)",
+                line_num + 1,
+                operand
+            ))
         }
     }
 
@@ -129,8 +149,9 @@ impl Assembler {
 
             // Add operand if instruction has one
             if self.instruction_size(&instruction.opcode) == 2 {
-                let operand = instruction.operand
-                    .ok_or_else(|| format!("Instruction {} requires operand", instruction.opcode))?;
+                let operand = instruction.operand.ok_or_else(|| {
+                    format!("Instruction {} requires operand", instruction.opcode)
+                })?;
                 self.machine_code.push(operand);
             }
         }
@@ -220,7 +241,7 @@ pub fn assemble(source: &str) -> Result<Vec<u8>, String> {
 /// Test the assembler
 pub fn test() {
     println!("=== Assembler Test ===");
-    
+
     // Test program 1: Simple addition (self-contained)
     let program1 = r#"
         ; Self-contained addition program (5 + 3)
@@ -240,7 +261,7 @@ pub fn test() {
             for (i, byte) in machine_code.iter().enumerate() {
                 println!("  [{:02X}]: 0x{:02X}", i, byte);
             }
-            
+
             // Test disassembly
             println!("\nDisassembled:");
             print!("{}", Assembler::disassemble(&machine_code));
@@ -295,4 +316,3 @@ pub fn test() {
         Err(e) => println!("Assembly error: {}", e),
     }
 }
-

@@ -73,8 +73,8 @@ impl Memory {
     /// Get a snapshot of all memory contents for debugging
     pub fn dump(&self) -> [u8; 16] {
         let mut dump = [0u8; 16];
-        for i in 0..16 {
-            dump[i] = self.cells[i].read();
+        for (i, item) in dump.iter_mut().enumerate() {
+            *item = self.cells[i].read();
         }
         dump
     }
@@ -92,7 +92,7 @@ impl Memory {
         // Using 4-bit values only (0x0 - 0xF)
         self.write(0x0, 0x1); // Instruction: LOAD
         self.write(0x1, 0x5); // Address: 0x5
-        self.write(0x2, 0x3); // Instruction: ADD  
+        self.write(0x2, 0x3); // Instruction: ADD
         self.write(0x3, 0x6); // Address: 0x6
         self.write(0x4, 0x2); // Instruction: STORE
         self.write(0x5, 0x7); // Address: 0x7
@@ -108,7 +108,7 @@ impl Memory {
         println!("=== Memory Test ===");
         println!("Address | Value");
         println!("--------|------");
-        
+
         for i in 0..16 {
             let value = self.read(i);
             println!("  0x{:X}   |  0x{:X}", i, value);
@@ -126,37 +126,36 @@ impl Default for Memory {
 /// Convenience function to test memory
 pub fn test() {
     let mut memory = Memory::new();
-    
+
     // Test basic read/write
     println!("=== Memory Component Test ===");
     println!("Testing basic read/write operations...");
-    
+
     memory.write(0x5, 0xA);
     memory.write(0xF, 0x3);
-    
+
     assert_eq!(memory.read(0x5), 0xA);
     assert_eq!(memory.read(0xF), 0x3);
     assert_eq!(memory.read(0x0), 0x0); // Unwritten should be 0
-    
+
     println!("✓ Basic read/write working");
-    
+
     // Test 4-bit masking
     memory.write(0x1, 0xFF); // Should be masked to 0xF
     assert_eq!(memory.read(0x1), 0xF);
     println!("✓ 4-bit masking working");
-    
-    // Test program loading  
+
+    // Test program loading
     let program = [0x1, 0x3, 0x2, 0xF];
     memory.load_program(&program);
-    
+
     for (i, &expected) in program.iter().enumerate() {
         assert_eq!(memory.read(i as u8), expected);
     }
     println!("✓ Program loading working");
-    
+
     // Load test data and display
     memory.clear();
     memory.init_test_data();
     memory.test();
 }
-

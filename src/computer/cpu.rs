@@ -1,26 +1,26 @@
-use super::alu::{ALU, ALUOperation};
+use super::alu::{ALUOperation, ALU};
 use super::memory::Memory;
 use super::registers::CPURegisters;
 
 /// 4-bit CPU Instructions
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Instruction {
-    NOP,         // 0x0: No operation
-    LOAD(u8),    // 0x1: Load memory[addr] into A
-    STORE(u8),   // 0x2: Store A into memory[addr]
-    ADD(u8),     // 0x3: Add memory[addr] to A
-    SUB(u8),     // 0x4: Subtract memory[addr] from A
-    AND(u8),     // 0x5: AND memory[addr] with A
-    OR(u8),      // 0x6: OR memory[addr] with A
-    XOR(u8),     // 0x7: XOR memory[addr] with A
-    JUMP(u8),    // 0x8: Set PC to addr
-    JZ(u8),      // 0x9: Jump if zero flag set
-    LDI(u8),     // 0xA: Load immediate value into A
-    INC,         // 0xB: Increment A
-    DEC,         // 0xC: Decrement A
-    CMP(u8),     // 0xD: Compare A with memory[addr] (sets flags)
-    JNZ(u8),     // 0xE: Jump if zero flag NOT set
-    HALT,        // 0xF: Stop execution
+    NOP,       // 0x0: No operation
+    LOAD(u8),  // 0x1: Load memory[addr] into A
+    STORE(u8), // 0x2: Store A into memory[addr]
+    ADD(u8),   // 0x3: Add memory[addr] to A
+    SUB(u8),   // 0x4: Subtract memory[addr] from A
+    AND(u8),   // 0x5: AND memory[addr] with A
+    OR(u8),    // 0x6: OR memory[addr] with A
+    XOR(u8),   // 0x7: XOR memory[addr] with A
+    JUMP(u8),  // 0x8: Set PC to addr
+    JZ(u8),    // 0x9: Jump if zero flag set
+    LDI(u8),   // 0xA: Load immediate value into A
+    INC,       // 0xB: Increment A
+    DEC,       // 0xC: Decrement A
+    CMP(u8),   // 0xD: Compare A with memory[addr] (sets flags)
+    JNZ(u8),   // 0xE: Jump if zero flag NOT set
+    HALT,      // 0xF: Stop execution
 }
 
 /// Simple 4-bit CPU implementation
@@ -77,61 +77,61 @@ impl SimpleCPU {
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::LOAD(operand)
-            },
+            }
             0x2 => {
                 // STORE needs operand from next memory location
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::STORE(operand)
-            },
+            }
             0x3 => {
                 // ADD needs operand from next memory location
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::ADD(operand)
-            },
+            }
             0x4 => {
                 // SUB needs operand from next memory location
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::SUB(operand)
-            },
+            }
             0x5 => {
                 // AND needs operand from next memory location
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::AND(operand)
-            },
+            }
             0x6 => {
                 // OR needs operand from next memory location
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::OR(operand)
-            },
+            }
             0x7 => {
                 // XOR needs operand from next memory location
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::XOR(operand)
-            },
+            }
             0x8 => {
                 // JUMP needs operand from next memory location
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::JUMP(operand)
-            },
+            }
             0x9 => {
                 // JZ needs operand from next memory location
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::JZ(operand)
-            },
+            }
             0xA => {
                 // LDI needs operand from next memory location
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::LDI(operand)
-            },
+            }
             0xB => Instruction::INC,
             0xC => Instruction::DEC,
             0xD => {
@@ -139,13 +139,13 @@ impl SimpleCPU {
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::CMP(operand)
-            },
+            }
             0xE => {
                 // JNZ needs operand from next memory location
                 let pc = self.registers.program_counter.read();
                 let operand = self.memory.read((pc + 1) & 0x0F);
                 Instruction::JNZ(operand)
-            },
+            }
             0xF => Instruction::HALT,
             _ => Instruction::NOP,
         }
@@ -249,16 +249,23 @@ impl SimpleCPU {
                 return; // Don't increment PC after halt
             }
         }
-        
+
         // Increment PC appropriately
         // Two-byte instructions need extra increment to skip operand
         // (except JZ/JNZ which handle their own PC)
-        let needs_extra_increment = matches!(instruction,
-            Instruction::LOAD(_) | Instruction::STORE(_) | Instruction::ADD(_) |
-            Instruction::SUB(_) | Instruction::AND(_) | Instruction::OR(_) |
-            Instruction::XOR(_) | Instruction::LDI(_) | Instruction::CMP(_)
+        let needs_extra_increment = matches!(
+            instruction,
+            Instruction::LOAD(_)
+                | Instruction::STORE(_)
+                | Instruction::ADD(_)
+                | Instruction::SUB(_)
+                | Instruction::AND(_)
+                | Instruction::OR(_)
+                | Instruction::XOR(_)
+                | Instruction::LDI(_)
+                | Instruction::CMP(_)
         );
-        
+
         self.registers.program_counter.increment();
         if needs_extra_increment {
             self.registers.program_counter.increment(); // Skip operand byte
@@ -270,7 +277,7 @@ impl SimpleCPU {
         if self.halted {
             return;
         }
-        
+
         let instruction_byte = self.fetch();
         let instruction = self.decode(instruction_byte);
         self.execute(instruction);
@@ -296,29 +303,29 @@ impl SimpleCPU {
     /// Test the CPU with a simple program
     pub fn test_simple_add(&mut self) {
         println!("=== CPU Test: Simple Addition ===");
-        
+
         // Program: Load 5, Add 3, Store result at address 0xF
         // Using two-byte format for 4-bit memory
         let program = [
-            0xA, 0x5,  // LDI 5 - Load immediate 5 into A
-            0x3, 0xE,  // ADD E - Add memory[E] to A (we'll put 3 there)
-            0x2, 0xF,  // STORE F - Store result at address F
-            0xF,       // HALT
+            0xA, 0x5, // LDI 5 - Load immediate 5 into A
+            0x3, 0xE, // ADD E - Add memory[E] to A (we'll put 3 there)
+            0x2, 0xF, // STORE F - Store result at address F
+            0xF, // HALT
         ];
-        
+
         // Put data value 3 at address 0xE
         self.memory.write(0xE, 3);
-        
+
         // Load and run program
         self.load_program(&program);
-        
+
         // Debug: Show loaded program
         println!("Loaded program in memory:");
         for i in 0..8 {
             println!("  Addr 0x{:X}: 0x{:X}", i, self.memory.read(i));
         }
         println!("  Data at 0xE: {}", self.memory.read(0xE));
-        
+
         // Run with debug
         for i in 0..10 {
             if self.halted {
@@ -327,11 +334,16 @@ impl SimpleCPU {
             }
             let pc = self.registers.program_counter.read();
             let instr = self.memory.read(pc);
-            println!("Cycle {}: PC=0x{:X}, Instruction=0x{:X}, A={}", 
-                     i, pc, instr, self.registers.accumulator.read());
+            println!(
+                "Cycle {}: PC=0x{:X}, Instruction=0x{:X}, A={}",
+                i,
+                pc,
+                instr,
+                self.registers.accumulator.read()
+            );
             self.cycle();
         }
-        
+
         // Check result
         let result = self.memory.read(0xF);
         println!("Program result: {} (expected: 8)", result);
@@ -344,20 +356,20 @@ impl SimpleCPU {
     pub fn test_conditional(&mut self) {
         println!("\n=== CPU Test: Conditional Jump ===");
         self.reset();
-        
+
         // Program: Count down from 3 to 0
         let program = [
-            0xA, 0x3,  // LDI 3 - Load 3 into A
-            0x2, 0xE,  // STORE E - Store A at address E (counter)
-            0xC,       // DEC - Decrement A (at address 4)
-            0x9, 0x8,  // JZ 8 - Jump to address 8 if zero
-            0x8, 0x4,  // JUMP 4 - Jump back to DEC
-            0xF,       // HALT (at address 8)
+            0xA, 0x3, // LDI 3 - Load 3 into A
+            0x2, 0xE, // STORE E - Store A at address E (counter)
+            0xC, // DEC - Decrement A (at address 4)
+            0x9, 0x8, // JZ 8 - Jump to address 8 if zero
+            0x8, 0x4, // JUMP 4 - Jump back to DEC
+            0xF, // HALT (at address 8)
         ];
-        
+
         self.load_program(&program);
         self.run(30);
-        
+
         let final_value = self.registers.accumulator.read();
         println!("Final accumulator: {} (expected: 0)", final_value);
         assert_eq!(final_value, 0);
@@ -368,32 +380,32 @@ impl SimpleCPU {
     pub fn test_logical(&mut self) {
         println!("\n=== CPU Test: Logical Operations ===");
         self.reset();
-        
+
         // Program: Test AND, OR
         // Note: Results stored at 0xC and 0xB
         let program = [
-            0xA, 0xC,  // LDI C (12) - Load 12 into A
-            0x5, 0xD,  // AND D - AND with memory[D] (we'll put 5 there)
-            0x2, 0xC,  // STORE C - Store result at C
-            0xA, 0xA,  // LDI A (10) - Load 10 into A  
-            0x6, 0xD,  // OR D - OR with memory[D] (5)
-            0x2, 0xB,  // STORE B - Store result at B
-            0xF,       // HALT
+            0xA, 0xC, // LDI C (12) - Load 12 into A
+            0x5, 0xD, // AND D - AND with memory[D] (we'll put 5 there)
+            0x2, 0xC, // STORE C - Store result at C
+            0xA, 0xA, // LDI A (10) - Load 10 into A
+            0x6, 0xD, // OR D - OR with memory[D] (5)
+            0x2, 0xB, // STORE B - Store result at B
+            0xF, // HALT
         ];
-        
+
         self.memory.write(0xD, 5);
         self.load_program(&program);
         self.run(20);
-        
+
         let and_result = self.memory.read(0xC);
         let or_result = self.memory.read(0xB);
-        
+
         println!("12 AND 5 = {} (expected: 4)", and_result);
         println!("10 OR 5 = {} (expected: 15)", or_result);
-        
-        assert_eq!(and_result, 4);  // 1100 & 0101 = 0100
-        assert_eq!(or_result, 15);  // 1010 | 0101 = 1111
-        
+
+        assert_eq!(and_result, 4); // 1100 & 0101 = 0100
+        assert_eq!(or_result, 15); // 1010 | 0101 = 1111
+
         println!("✓ Logical operations test passed");
     }
 }
@@ -407,12 +419,11 @@ impl Default for SimpleCPU {
 /// Convenience function to test CPU
 pub fn test() {
     let mut cpu = SimpleCPU::new();
-    
+
     cpu.test_simple_add();
     cpu.test_conditional();
     cpu.test_logical();
-    
+
     println!("\n=== Final CPU State ===");
     cpu.display_state();
 }
-

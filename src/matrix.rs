@@ -1,8 +1,30 @@
+//! Matrix operations with operator overloading for neural networks.
+//!
+//! This module provides a `Matrix` struct with comprehensive matrix operations
+//! including arithmetic operations, transpose, and element-wise operations.
+//! All operations support operator overloading for clean, mathematical syntax.
+
 use crate::calc::Calc;
 use std::ops::{Add, Mul, Sub};
 
+/// A 2D matrix structure for neural network computations.
+///
+/// The matrix stores data as a vector of vectors (`Vec<Vec<f64>>`) and provides
+/// mathematical operations through operator overloading and dedicated methods.
+///
+/// # Examples
+///
+/// ```
+/// use aspirina::matrix::Matrix;
+///
+/// let a = Matrix::new(vec![vec![1.0, 2.0], vec![3.0, 4.0]]);
+/// let b = Matrix::new(vec![vec![5.0, 6.0], vec![7.0, 8.0]]);
+/// let c = a.clone() + b.clone();  // Matrix addition
+/// let d = a * b;  // Matrix multiplication
+/// ```
 #[derive(Debug, Clone)]
 pub struct Matrix {
+    /// The matrix data stored as rows and columns
     pub data: Vec<Vec<f64>>,
 }
 

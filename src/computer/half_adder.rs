@@ -85,4 +85,3 @@ impl Default for HalfAdder {
 pub fn test() {
     HalfAdder::new().test();
 }
-

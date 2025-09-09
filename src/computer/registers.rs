@@ -63,16 +63,16 @@ impl Default for Register4Bit {
 pub struct CPURegisters {
     /// Accumulator - main working register for arithmetic/logic operations
     pub accumulator: Register4Bit,
-    
+
     /// Program Counter - points to next instruction to execute
     pub program_counter: Register4Bit,
-    
+
     /// Instruction Register - holds current instruction being executed
     pub instruction_register: Register4Bit,
-    
+
     /// Status flags
-    pub zero_flag: bool,   // Set when last operation resulted in zero
-    pub carry_flag: bool,  // Set when last operation had carry/overflow
+    pub zero_flag: bool, // Set when last operation resulted in zero
+    pub carry_flag: bool, // Set when last operation had carry/overflow
 }
 
 impl CPURegisters {
@@ -105,10 +105,23 @@ impl CPURegisters {
     /// Display register state for debugging
     pub fn display(&self) {
         println!("=== CPU Registers ===");
-        println!("A:  0x{:X} ({})", self.accumulator.read(), self.accumulator.read());
-        println!("PC: 0x{:X} ({})", self.program_counter.read(), self.program_counter.read());
-        println!("IR: 0x{:X} ({})", self.instruction_register.read(), self.instruction_register.read());
-        println!("Flags: Z={} C={}", 
+        println!(
+            "A:  0x{:X} ({})",
+            self.accumulator.read(),
+            self.accumulator.read()
+        );
+        println!(
+            "PC: 0x{:X} ({})",
+            self.program_counter.read(),
+            self.program_counter.read()
+        );
+        println!(
+            "IR: 0x{:X} ({})",
+            self.instruction_register.read(),
+            self.instruction_register.read()
+        );
+        println!(
+            "Flags: Z={} C={}",
             if self.zero_flag { "1" } else { "0" },
             if self.carry_flag { "1" } else { "0" }
         );
@@ -117,12 +130,12 @@ impl CPURegisters {
     /// Test the registers
     pub fn test(&mut self) {
         println!("=== Register Test ===");
-        
+
         // Test accumulator
         self.accumulator.write(0x5);
         assert_eq!(self.accumulator.read(), 0x5);
         println!("✓ Accumulator write/read");
-        
+
         // Test program counter increment
         self.program_counter.write(0xE);
         self.program_counter.increment();
@@ -130,22 +143,22 @@ impl CPURegisters {
         self.program_counter.increment(); // Should wrap to 0
         assert_eq!(self.program_counter.read(), 0x0);
         println!("✓ Program counter increment with wrap");
-        
+
         // Test instruction register
         self.instruction_register.write(0xFF); // Should be masked to 0xF
         assert_eq!(self.instruction_register.read(), 0xF);
         println!("✓ Instruction register masking");
-        
+
         // Test flags
         self.update_flags(0x0, false);
         assert!(self.zero_flag);
         assert!(!self.carry_flag);
-        
+
         self.update_flags(0x5, true);
         assert!(!self.zero_flag);
         assert!(self.carry_flag);
         println!("✓ Flag updates");
-        
+
         // Test reset
         self.reset();
         assert_eq!(self.accumulator.read(), 0);
@@ -154,7 +167,7 @@ impl CPURegisters {
         assert!(!self.zero_flag);
         assert!(!self.carry_flag);
         println!("✓ Reset functionality");
-        
+
         // Display final state
         self.accumulator.write(0x7);
         self.program_counter.write(0x3);
@@ -175,4 +188,3 @@ pub fn test() {
     let mut registers = CPURegisters::new();
     registers.test();
 }
-

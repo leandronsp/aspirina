@@ -16,16 +16,16 @@ pub enum Expr {
 /// Simple statement types
 #[derive(Debug, Clone)]
 pub enum Statement {
-    Let(String, Expr),           // let x = 5
-    Assign(String, Expr),        // x = y + 3
-    Print(Expr),                 // print(x)
+    Let(String, Expr),    // let x = 5
+    Assign(String, Expr), // x = y + 3
+    Print(Expr),          // print(x)
 }
 
 /// Simple interpreter for high-level language
 pub struct Interpreter {
     cpu: SimpleCPU,
     variables: HashMap<String, u8>,
-    memory_counter: u8,  // Track next available memory address
+    memory_counter: u8, // Track next available memory address
 }
 
 impl Interpreter {
@@ -86,11 +86,11 @@ impl Interpreter {
                     Ok(n)
                 }
             }
-            Expr::Variable(var_name) => {
-                self.variables.get(&var_name)
-                    .copied()
-                    .ok_or_else(|| format!("Variable '{}' not found", var_name))
-            }
+            Expr::Variable(var_name) => self
+                .variables
+                .get(&var_name)
+                .copied()
+                .ok_or_else(|| format!("Variable '{}' not found", var_name)),
             Expr::Add(left, right) => {
                 let a = self.evaluate_expression(*left)?;
                 let b = self.evaluate_expression(*right)?;
@@ -127,14 +127,21 @@ impl Interpreter {
         let result_addr = self.get_temp_address();
 
         let program = vec![
-            0xA, a,        // LDI a
-            0x2, temp1,    // STORE temp1
-            0xA, b,        // LDI b  
-            0x2, temp2,    // STORE temp2
-            0x1, temp1,    // LOAD temp1
-            0x3, temp2,    // ADD temp2 (neural addition!)
-            0x2, result_addr, // STORE result
-            0xF,           // HALT
+            0xA,
+            a, // LDI a
+            0x2,
+            temp1, // STORE temp1
+            0xA,
+            b, // LDI b
+            0x2,
+            temp2, // STORE temp2
+            0x1,
+            temp1, // LOAD temp1
+            0x3,
+            temp2, // ADD temp2 (neural addition!)
+            0x2,
+            result_addr, // STORE result
+            0xF,         // HALT
         ];
 
         self.cpu.reset();
@@ -142,9 +149,11 @@ impl Interpreter {
         self.cpu.run(20);
 
         let result = self.cpu.memory.read(result_addr);
-        println!("    Neural ADD: {} + {} = {} (addresses: temp1=0x{:X}, temp2=0x{:X}, result=0x{:X})", 
-                 a, b, result, temp1, temp2, result_addr);
-        
+        println!(
+            "    Neural ADD: {} + {} = {} (addresses: temp1=0x{:X}, temp2=0x{:X}, result=0x{:X})",
+            a, b, result, temp1, temp2, result_addr
+        );
+
         Ok(result)
     }
 
@@ -155,14 +164,21 @@ impl Interpreter {
         let result_addr = self.get_temp_address();
 
         let program = vec![
-            0xA, a,        // LDI a
-            0x2, temp1,    // STORE temp1
-            0xA, b,        // LDI b
-            0x2, temp2,    // STORE temp2
-            0x1, temp1,    // LOAD temp1
-            0x4, temp2,    // SUB temp2 (neural subtraction!)
-            0x2, result_addr, // STORE result
-            0xF,           // HALT
+            0xA,
+            a, // LDI a
+            0x2,
+            temp1, // STORE temp1
+            0xA,
+            b, // LDI b
+            0x2,
+            temp2, // STORE temp2
+            0x1,
+            temp1, // LOAD temp1
+            0x4,
+            temp2, // SUB temp2 (neural subtraction!)
+            0x2,
+            result_addr, // STORE result
+            0xF,         // HALT
         ];
 
         self.cpu.reset();
@@ -179,14 +195,21 @@ impl Interpreter {
         let result_addr = self.get_temp_address();
 
         let program = vec![
-            0xA, a,        // LDI a
-            0x2, temp1,    // STORE temp1
-            0xA, b,        // LDI b
-            0x2, temp2,    // STORE temp2
-            0x1, temp1,    // LOAD temp1
-            0x5, temp2,    // AND temp2 (neural AND!)
-            0x2, result_addr, // STORE result
-            0xF,           // HALT
+            0xA,
+            a, // LDI a
+            0x2,
+            temp1, // STORE temp1
+            0xA,
+            b, // LDI b
+            0x2,
+            temp2, // STORE temp2
+            0x1,
+            temp1, // LOAD temp1
+            0x5,
+            temp2, // AND temp2 (neural AND!)
+            0x2,
+            result_addr, // STORE result
+            0xF,         // HALT
         ];
 
         self.cpu.reset();
@@ -194,9 +217,11 @@ impl Interpreter {
         self.cpu.run(20);
 
         let result = self.cpu.memory.read(result_addr);
-        println!("    Neural AND: {} & {} = {} (binary: {:04b} & {:04b} = {:04b})", 
-                 a, b, result, a, b, result);
-        
+        println!(
+            "    Neural AND: {} & {} = {} (binary: {:04b} & {:04b} = {:04b})",
+            a, b, result, a, b, result
+        );
+
         Ok(result)
     }
 
@@ -207,14 +232,21 @@ impl Interpreter {
         let result_addr = self.get_temp_address();
 
         let program = vec![
-            0xA, a,        // LDI a
-            0x2, temp1,    // STORE temp1
-            0xA, b,        // LDI b
-            0x2, temp2,    // STORE temp2
-            0x1, temp1,    // LOAD temp1
-            0x6, temp2,    // OR temp2 (neural OR!)
-            0x2, result_addr, // STORE result
-            0xF,           // HALT
+            0xA,
+            a, // LDI a
+            0x2,
+            temp1, // STORE temp1
+            0xA,
+            b, // LDI b
+            0x2,
+            temp2, // STORE temp2
+            0x1,
+            temp1, // LOAD temp1
+            0x6,
+            temp2, // OR temp2 (neural OR!)
+            0x2,
+            result_addr, // STORE result
+            0xF,         // HALT
         ];
 
         self.cpu.reset();
@@ -231,14 +263,21 @@ impl Interpreter {
         let result_addr = self.get_temp_address();
 
         let program = vec![
-            0xA, a,        // LDI a
-            0x2, temp1,    // STORE temp1
-            0xA, b,        // LDI b
-            0x2, temp2,    // STORE temp2
-            0x1, temp1,    // LOAD temp1
-            0x7, temp2,    // XOR temp2 (neural XOR!)
-            0x2, result_addr, // STORE result
-            0xF,           // HALT
+            0xA,
+            a, // LDI a
+            0x2,
+            temp1, // STORE temp1
+            0xA,
+            b, // LDI b
+            0x2,
+            temp2, // STORE temp2
+            0x1,
+            temp1, // LOAD temp1
+            0x7,
+            temp2, // XOR temp2 (neural XOR!)
+            0x2,
+            result_addr, // STORE result
+            0xF,         // HALT
         ];
 
         self.cpu.reset();
@@ -270,7 +309,7 @@ impl Parser {
     /// Parse a simple statement like "let x = 5 + 3"
     pub fn parse_statement(input: &str) -> Result<Statement, String> {
         let input = input.trim();
-        
+
         if input.starts_with("let ") {
             Parser::parse_let(input)
         } else if input.starts_with("print(") && input.ends_with(')') {
@@ -286,34 +325,34 @@ impl Parser {
     fn parse_let(input: &str) -> Result<Statement, String> {
         let without_let = &input[4..]; // Remove "let "
         let parts: Vec<&str> = without_let.splitn(2, " = ").collect();
-        
+
         if parts.len() != 2 {
             return Err("Invalid let statement. Use: let x = expression".to_string());
         }
 
         let var_name = parts[0].trim().to_string();
         let expr = Parser::parse_expression(parts[1])?;
-        
+
         Ok(Statement::Let(var_name, expr))
     }
 
     /// Parse assignment: "x = 5 + 3"
     fn parse_assign(input: &str) -> Result<Statement, String> {
         let parts: Vec<&str> = input.splitn(2, " = ").collect();
-        
+
         if parts.len() != 2 {
             return Err("Invalid assignment. Use: variable = expression".to_string());
         }
 
         let var_name = parts[0].trim().to_string();
         let expr = Parser::parse_expression(parts[1])?;
-        
+
         Ok(Statement::Assign(var_name, expr))
     }
 
     /// Parse print statement: "print(x + 5)"
     fn parse_print(input: &str) -> Result<Statement, String> {
-        let inner = &input[6..input.len()-1]; // Remove "print(" and ")"
+        let inner = &input[6..input.len() - 1]; // Remove "print(" and ")"
         let expr = Parser::parse_expression(inner)?;
         Ok(Statement::Print(expr))
     }
@@ -322,17 +361,18 @@ impl Parser {
     /// Handles left-to-right evaluation: "a - b + c" becomes "(a - b) + c"
     fn parse_expression(input: &str) -> Result<Expr, String> {
         let input = input.trim();
-        
+
         // Handle binary operations with proper left-to-right precedence
         // Find the rightmost operator of lowest precedence
-        for op in &[" + ", " - "] {  // Addition/subtraction (lowest precedence)
+        for op in &[" + ", " - "] {
+            // Addition/subtraction (lowest precedence)
             if let Some(pos) = input.rfind(op) {
                 let left_str = &input[..pos];
                 let right_str = &input[pos + op.len()..];
-                
+
                 let left = Box::new(Parser::parse_expression(left_str)?);
                 let right = Box::new(Parser::parse_expression(right_str)?);
-                
+
                 return match op.trim() {
                     "+" => Ok(Expr::Add(left, right)),
                     "-" => Ok(Expr::Sub(left, right)),
@@ -340,16 +380,16 @@ impl Parser {
                 };
             }
         }
-        
+
         // Then handle logical operations (higher precedence)
         for op in &[" & ", " | ", " ^ "] {
             if let Some(pos) = input.rfind(op) {
                 let left_str = &input[..pos];
                 let right_str = &input[pos + op.len()..];
-                
+
                 let left = Box::new(Parser::parse_expression(left_str)?);
                 let right = Box::new(Parser::parse_expression(right_str)?);
-                
+
                 return match op.trim() {
                     "&" => Ok(Expr::And(left, right)),
                     "|" => Ok(Expr::Or(left, right)),
@@ -358,17 +398,17 @@ impl Parser {
                 };
             }
         }
-        
+
         // Handle numbers
         if let Ok(num) = input.parse::<u8>() {
             return Ok(Expr::Number(num));
         }
-        
+
         // Handle variables
         if input.chars().all(|c| c.is_alphanumeric() || c == '_') {
             return Ok(Expr::Variable(input.to_string()));
         }
-        
+
         Err(format!("Invalid expression: {}", input))
     }
 }
@@ -376,52 +416,52 @@ impl Parser {
 /// Test the interpreter
 pub fn test() {
     println!("=== Neural Computer Interpreter Test ===");
-    
+
     let mut interpreter = Interpreter::new();
-    
+
     // Test 1: Simple arithmetic
     println!("\n--- Test 1: Neural Addition ---");
     let program1 = vec![
         "let a = 5",
-        "let b = 3", 
+        "let b = 3",
         "let result = a + b",
-        "print(result)"
+        "print(result)",
     ];
-    
+
     run_program(&mut interpreter, program1);
-    
+
     // Test 2: Logical operations
     println!("\n--- Test 2: Neural Logic ---");
     let program2 = vec![
-        "let x = 12",  // 1100 in binary
-        "let y = 5",   // 0101 in binary
+        "let x = 12", // 1100 in binary
+        "let y = 5",  // 0101 in binary
         "let and_result = x & y",
-        "let or_result = x | y", 
+        "let or_result = x | y",
         "let xor_result = x ^ y",
         "print(and_result)",
         "print(or_result)",
-        "print(xor_result)"
+        "print(xor_result)",
     ];
-    
+
     run_program(&mut interpreter, program2);
-    
+
     // Test 3: Complex expression
     println!("\n--- Test 3: Complex Expression ---");
     let program3 = vec![
         "let a = 8",
         "let b = 3",
-        "let c = 2", 
+        "let c = 2",
         "let result = a - b + c",
-        "print(result)"
+        "print(result)",
     ];
-    
+
     run_program(&mut interpreter, program3);
 }
 
 /// Helper function to run a program
 fn run_program(interpreter: &mut Interpreter, lines: Vec<&str>) {
     let mut statements = Vec::new();
-    
+
     for line in lines {
         match Parser::parse_statement(line) {
             Ok(stmt) => {
@@ -434,10 +474,9 @@ fn run_program(interpreter: &mut Interpreter, lines: Vec<&str>) {
             }
         }
     }
-    
+
     match interpreter.execute(statements) {
         Ok(()) => println!("✓ Program executed successfully"),
         Err(e) => println!("✗ Execution error: {}", e),
     }
 }
-
