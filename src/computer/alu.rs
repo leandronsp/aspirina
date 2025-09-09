@@ -265,3 +265,8 @@ impl Default for ALU {
         Self::new()
     }
 }
+
+/// Convenience function to test ALU
+pub fn test() {
+    ALU::new().test();
+}

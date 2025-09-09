@@ -103,3 +103,8 @@ impl Default for FullAdder {
         Self::new()
     }
 }
+
+/// Convenience function to test full adder
+pub fn test() {
+    FullAdder::new().test();
+}

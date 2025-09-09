@@ -64,7 +64,7 @@ Each gate is trained with 10,000 epochs to learn boolean logic operations:
 ### Computer Components (Tests 8-11)
 Neural networks trained as logic gates are combined to build arithmetic circuits:
 
-**Test 8: All Logic Gates** - Validates all 7 gates achieve correct truth tables  
+**Test 8: All Logic Gates** - Validates that logic gates achieve correct truth tables  
 **Test 9: Half Adder** - Adds two bits producing sum (XOR) and carry (AND)  
 **Test 10: Full Adder** - Adds three bits using two half adders  
 **Test 11: 4-bit ALU** - Performs Add/Subtract/AND/OR/XOR on 4-bit numbers

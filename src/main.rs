@@ -8,10 +8,7 @@ mod training {
     pub mod xor_gate;
 }
 
-use aspirina::computer::alu;
-use aspirina::computer::full_adder;
-use aspirina::computer::gates;
-use aspirina::computer::half_adder;
+use aspirina::computer;
 use std::io::{self, Write};
 
 fn main() {
@@ -50,19 +47,19 @@ fn main() {
         "7" => training::xnor_gate::run(),
         "8" => {
             println!("=== Neural Computer Logic Gates Test ===");
-            gates::test_all_gates();
+            computer::gates::test_all_gates();
         }
         "9" => {
             println!("=== Neural Computer Half Adder Test ===");
-            half_adder::HalfAdder::new().test();
+            computer::half_adder::test();
         }
         "10" => {
             println!("=== Neural Computer Full Adder Test ===");
-            full_adder::FullAdder::new().test();
+            computer::full_adder::test();
         }
         "11" => {
             println!("=== Neural Computer 4-bit ALU Test ===");
-            alu::ALU::new().test();
+            computer::alu::test();
         }
         "0" => println!("Goodbye!"),
         _ => println!("Invalid selection. Please run again and choose 0-11."),

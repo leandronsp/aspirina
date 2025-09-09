@@ -81,6 +81,11 @@ impl Default for HalfAdder {
     }
 }
 
+/// Convenience function to test half adder
+pub fn test() {
+    HalfAdder::new().test();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
