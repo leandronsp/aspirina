@@ -1,13 +1,45 @@
-# CLAUDE.md
+# Aspirina
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Neural network library in Rust. The core is matrix operations and layers with feedforward/backpropagation. Everything else are examples that exercise the library.
 
-## Project Overview
-Aspirina is a neural network library in Rust. The core is matrix operations and layers with feedforward/backpropagation. Everything else in this repo are examples that exercise the library.
+The `src/computer/` module is a sample project: a 4-bit neural CPU where all arithmetic/logic is performed by trained neural networks. Extracted to [Synapse](https://github.com/leandronsp/synapse).
 
-The `src/computer/` module is a sample project: a 4-bit neural CPU where all arithmetic/logic is performed by trained neural networks. It has been extracted into its own repo as [Synapse](https://github.com/leandronsp/synapse).
+## Project Structure
 
-## Commands
+```
+├── src/
+│   ├── lib.rs                # Re-exports core modules
+│   ├── main.rs               # Interactive menu
+│   ├── matrix.rs             # Matrix type with operator overloading, transpose, element-wise ops
+│   ├── calc.rs               # Sigmoid, tanh with derivatives
+│   ├── layer.rs              # Single network layer: weights + cached forward result
+│   ├── neural_network.rs     # Rc<RefCell<Layer>> shared layers, forward/backward, train, predict
+│   ├── training/             # Logic gate training scenarios (XOR, AND, OR, etc.)
+│   └── computer/             # 4-bit neural CPU (gates, ALU, memory, CPU, assembler)
+├── tests/
+│   ├── matrix_test.rs
+│   ├── calc_test.rs
+│   ├── layer_test.rs
+│   └── neural_network_test.rs
+├── .claude/
+│   ├── agents/
+│   │   ├── scout.md          # Read-only codebase explorer
+│   │   ├── code-reviewer.md  # Staff Engineer reviewer (Rust)
+│   │   └── plan-reviewer.md  # Implementation plan stress-tester
+│   ├── rules/
+│   │   ├── git.md            # Git conventions (commits, branches, staging)
+│   │   ├── testing.md        # TDD conventions
+│   │   └── rust.md           # Rust patterns and anti-patterns
+│   └── skills/
+│       ├── commit/skill.md   # Git commit
+│       ├── dev/skill.md      # TDD implementer
+│       ├── review/skill.md   # Code review
+│       ├── po/skill.md       # Product Owner (GitHub issues)
+│       └── pr/skill.md       # Pull request creator
+└── CLAUDE.md
+```
+
+## Build & Run
 
 ```bash
 cargo build              # Build
@@ -20,29 +52,26 @@ cargo fmt                # Format
 cargo clippy             # Lint
 ```
 
-## Architecture
+## Code Standards
 
-### Core Library (`src/lib.rs`)
-The heart of Aspirina. Matrix operations and layers are the foundation. Everything else builds on top.
-- **`matrix.rs`**. Matrix type with operator overloading (`+`, `-`, `*`), transpose, element-wise multiply (`naive_multiply`), and derivative computation.
-- **`calc.rs`**. Sigmoid and tanh activation functions with derivatives.
-- **`layer.rs`**. Single network layer: weight matrix + optional cached forward pass result.
-- **`neural_network.rs`**. `NeuralNetwork` struct using `Rc<RefCell<Layer>>` for shared mutable layers. Forward/backward propagation, train, predict.
+- Self-documenting function names; comment non-obvious logic (WHY, not WHAT)
+- `cargo test` must pass before committing
+- `cargo clippy` must pass before committing
+- `cargo fmt --check` must pass before committing
+- No external deps unless strictly necessary
 
-### Examples
+## TDD
 
-#### Training Scenarios (`src/training/`)
-Seven gate training scenarios (XOR, AND, OR, NAND, NOT, NOR, XNOR), each with a `run()` entry point. These demonstrate the library on classic logic gate problems.
+- Write tests BEFORE or alongside implementation, never after
+- Run `cargo test` after every meaningful change, not just at the end
+- Test public API only. Do not test private functions directly.
+- One assertion focus per test (multiple asserts OK if testing one logical thing)
 
-#### Neural Computer (`src/computer/`)
-Sample project: a 4-bit CPU built entirely from trained neural networks. Extracted to [Synapse](https://github.com/leandronsp/synapse).
-- `gates.rs` (7 neural logic gates), `half_adder.rs`, `full_adder.rs`, `alu.rs` (4-bit ALU), `memory.rs` (16 x 4-bit cells), `registers.rs`, `cpu.rs` (fetch-decode-execute, 16 instructions), `assembler.rs`, `interpreter.rs`.
+## Git
 
-#### Binary (`src/main.rs`)
-Interactive menu that runs training scenarios and computer component tests.
-
-### Tests
-Unit tests live in `tests/` directory: `matrix_test.rs`, `calc_test.rs`, `layer_test.rs`, `neural_network_test.rs`.
+- Conventional commits: `feat:`, `fix:`, `refactor:`, `test:`, `chore:`
+- Never mention AI/Claude in commits, no Co-Authored-By
+- Stage specific files, never `git add .`
 
 ## Key Design Decisions
 
