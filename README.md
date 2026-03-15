@@ -62,7 +62,8 @@ Each gate is trained with 10,000 epochs to learn boolean logic operations:
 | XNOR | ¬(A⊕B) | Outputs 1 when inputs are equal |
 
 ### Computer Components (Tests 8-16)
-Neural networks trained as logic gates are combined to build complete computer architecture:
+Neural networks trained as logic gates are combined to build complete computer architecture.
+Extracted to its own project: [Synapse](https://github.com/leandronsp/synapse).
 
 **Test 8: All Logic Gates** - Validates that logic gates achieve correct truth tables  
 **Test 9: Half Adder** - Adds two bits producing sum (XOR) and carry (AND)  
@@ -127,7 +128,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-aspirina = "0.1.0"
+aspirina = "0.1.1"
 ```
 
 Example training a XOR gate:
