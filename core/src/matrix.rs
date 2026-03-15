@@ -15,7 +15,7 @@ use std::ops::{Add, Mul, Sub};
 /// # Examples
 ///
 /// ```
-/// use aspirina::matrix::Matrix;
+/// use aspirina_core::matrix::Matrix;
 ///
 /// let a = Matrix::new(vec![vec![1.0, 2.0], vec![3.0, 4.0]]);
 /// let b = Matrix::new(vec![vec![5.0, 6.0], vec![7.0, 8.0]]);

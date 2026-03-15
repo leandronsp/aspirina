@@ -1,0 +1,9 @@
+[package]
+name = "aspirina-gates"
+version = "0.1.1"
+edition = "2021"
+description = "Neural network gate training and neural computer for Aspirina"
+license = "MIT"
+
+[dependencies]
+aspirina-core = { path = "../core" }

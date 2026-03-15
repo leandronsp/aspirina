@@ -50,7 +50,7 @@ impl Calc {
     /// # Examples
     ///
     /// ```
-    /// use aspirina::calc::Calc;
+    /// use aspirina_core::calc::Calc;
     ///
     /// let input = 0.0;
     /// let result = Calc::sigmoid(&input);
@@ -90,7 +90,7 @@ impl Calc {
     /// # Examples
     ///
     /// ```
-    /// use aspirina::calc::Calc;
+    /// use aspirina_core::calc::Calc;
     ///
     /// let sigmoid_output = 0.5; // sigmoid(0) = 0.5
     /// let derivative = Calc::sigmoid_derivative(&sigmoid_output);
@@ -126,7 +126,7 @@ impl Calc {
     /// # Examples
     ///
     /// ```
-    /// use aspirina::calc::Calc;
+    /// use aspirina_core::calc::Calc;
     ///
     /// let input = 0.0;
     /// let result = Calc::tanh(&input);
@@ -161,7 +161,7 @@ impl Calc {
     /// # Examples
     ///
     /// ```
-    /// use aspirina::calc::Calc;
+    /// use aspirina_core::calc::Calc;
     ///
     /// let input = 0.0;
     /// let derivative = Calc::tanh_derivative(&input);

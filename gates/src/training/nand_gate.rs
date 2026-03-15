@@ -1,10 +1,10 @@
-use aspirina::layer::Layer;
-use aspirina::matrix::Matrix;
-use aspirina::neural_network::NeuralNetwork;
+use crate::layer::Layer;
+use crate::neural_network::NeuralNetwork;
+use aspirina_core::matrix::Matrix;
 
 pub fn run() {
-    println!("=== AND Gate Training ===");
-    println!("Training neural network to learn AND logic gate...");
+    println!("=== NAND Gate Training ===");
+    println!("Training neural network to learn NAND logic gate...");
 
     let network = create_network();
 
@@ -15,7 +15,7 @@ pub fn run() {
         vec![1.0, 1.0],
     ]);
 
-    let targets = Matrix::new(vec![vec![0.0, 0.0, 0.0, 1.0]]);
+    let targets = Matrix::new(vec![vec![1.0, 1.0, 1.0, 0.0]]);
 
     // Training loop with progress
     let epochs = 10_000;
@@ -27,23 +27,23 @@ pub fn run() {
     }
 
     println!("\n=== Training Complete ===");
-    println!("Testing AND gate logic:");
+    println!("Testing NAND gate logic:");
 
-    // Test all AND combinations
+    // Test all NAND combinations
     let test_cases = [
-        (vec![0.0, 0.0], "0 AND 0"),
-        (vec![0.0, 1.0], "0 AND 1"),
-        (vec![1.0, 0.0], "1 AND 0"),
-        (vec![1.0, 1.0], "1 AND 1"),
+        (vec![0.0, 0.0], "0 NAND 0"),
+        (vec![0.0, 1.0], "0 NAND 1"),
+        (vec![1.0, 0.0], "1 NAND 0"),
+        (vec![1.0, 1.0], "1 NAND 1"),
     ];
 
     for (input_vals, description) in test_cases {
         let result = network.predict(Matrix::new(vec![input_vals.clone()]));
         let output = result.data[0][0];
         let expected = if input_vals[0] > 0.5 && input_vals[1] > 0.5 {
-            1.0
+            0.0 // NAND is NOT AND
         } else {
-            0.0
+            1.0
         };
 
         println!(
@@ -66,15 +66,14 @@ pub fn run() {
 }
 
 fn create_network() -> NeuralNetwork {
-    // Better biased network for AND gate
-    // AND gate needs both inputs to be high, so we use positive weights
+    // NAND gate is inverted AND - high unless both inputs are high
     let layers = vec![
         Layer::new(Matrix::new(vec![
-            vec![0.8, 0.8],   // Both inputs weighted positively
-            vec![0.6, 0.6],   // Second neuron also positive
-            vec![-0.3, -0.3], // Third neuron with negative bias
+            vec![-0.8, -0.8], // Negative weights for NAND logic
+            vec![0.5, 0.5],   // Positive bias neuron
+            vec![-0.3, 0.3],  // Mixed weights for complexity
         ])),
-        Layer::new(Matrix::new(vec![vec![1.2, 0.8, -0.5]])), // Output layer biased towards conjunction
+        Layer::new(Matrix::new(vec![vec![-1.2, 1.5, 0.8]])),
     ];
 
     NeuralNetwork::new(layers)

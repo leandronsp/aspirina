@@ -26,9 +26,9 @@
 //! # Example Usage
 //!
 //! ```rust
-//! # use aspirina::neural_network::NeuralNetwork;
-//! # use aspirina::layer::Layer;
-//! # use aspirina::matrix::Matrix;
+//! # use aspirina_gates::neural_network::NeuralNetwork;
+//! # use aspirina_gates::layer::Layer;
+//! # use aspirina_core::matrix::Matrix;
 //! // Create a network with input(2) -> hidden(3) -> output(1) architecture
 //! let layers = vec![
 //!     Layer::new(Matrix::new(vec![vec![0.1, 0.2], vec![0.3, 0.4], vec![0.5, 0.6]])),
@@ -49,9 +49,9 @@
 //! let prediction = network.predict(Matrix::new(vec![vec![1.0, 0.0]]));
 //! ```
 
-use crate::calc::Calc;
 use crate::layer::Layer;
-use crate::matrix::Matrix;
+use aspirina_core::calc::Calc;
+use aspirina_core::matrix::Matrix;
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -119,9 +119,9 @@ impl NeuralNetwork {
     /// # Example
     ///
     /// ```rust
-    /// # use aspirina::neural_network::NeuralNetwork;
-    /// # use aspirina::layer::Layer;
-    /// # use aspirina::matrix::Matrix;
+    /// # use aspirina_gates::neural_network::NeuralNetwork;
+    /// # use aspirina_gates::layer::Layer;
+    /// # use aspirina_core::matrix::Matrix;
     /// // Create a 2-3-1 network (2 inputs, 3 hidden, 1 output)
     /// let layers = vec![
     ///     // Hidden layer: 3 neurons, 2 inputs each
@@ -182,9 +182,9 @@ impl NeuralNetwork {
     /// # Example
     ///
     /// ```rust
-    /// # use aspirina::neural_network::NeuralNetwork;
-    /// # use aspirina::layer::Layer;
-    /// # use aspirina::matrix::Matrix;
+    /// # use aspirina_gates::neural_network::NeuralNetwork;
+    /// # use aspirina_gates::layer::Layer;
+    /// # use aspirina_core::matrix::Matrix;
     /// // Create a simple network
     /// let layers = vec![
     ///     Layer::new(Matrix::new(vec![vec![0.1, 0.2], vec![0.3, 0.4]])),
@@ -247,9 +247,9 @@ impl NeuralNetwork {
     /// # Example
     ///
     /// ```rust
-    /// # use aspirina::neural_network::NeuralNetwork;
-    /// # use aspirina::layer::Layer;
-    /// # use aspirina::matrix::Matrix;
+    /// # use aspirina_gates::neural_network::NeuralNetwork;
+    /// # use aspirina_gates::layer::Layer;
+    /// # use aspirina_core::matrix::Matrix;
     /// // Create and train a simple network
     /// let layers = vec![
     ///     Layer::new(Matrix::new(vec![vec![0.1, 0.2], vec![0.3, 0.4]])),

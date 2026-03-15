@@ -1,4 +1,4 @@
-use aspirina::calc::Calc;
+use aspirina_core::calc::Calc;
 
 #[test]
 fn sigmoid_at_zero() {

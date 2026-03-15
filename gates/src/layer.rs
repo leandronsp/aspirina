@@ -4,7 +4,7 @@
 //! Each layer contains a weight matrix and can store forward propagation results for use during
 //! backpropagation training.
 
-use crate::matrix::Matrix;
+use aspirina_core::matrix::Matrix;
 
 /// Represents a single layer in a neural network.
 ///
@@ -28,8 +28,8 @@ use crate::matrix::Matrix;
 /// # Examples
 ///
 /// ```rust
-/// use aspirina::matrix::Matrix;
-/// use aspirina::layer::Layer;
+/// use aspirina_core::matrix::Matrix;
+/// use aspirina_gates::layer::Layer;
 ///
 /// // Create a layer with 2 inputs and 3 outputs
 /// let weights = Matrix::new(vec![
@@ -73,8 +73,8 @@ impl Layer {
     /// # Examples
     ///
     /// ```rust
-    /// use aspirina::matrix::Matrix;
-    /// use aspirina::layer::Layer;
+    /// use aspirina_core::matrix::Matrix;
+    /// use aspirina_gates::layer::Layer;
     ///
     /// // Create a layer for XOR gate (2 inputs, 2 hidden neurons)
     /// let weights = Matrix::new(vec![

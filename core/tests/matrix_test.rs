@@ -1,4 +1,4 @@
-use aspirina::matrix::Matrix;
+use aspirina_core::matrix::Matrix;
 
 #[test]
 fn transpose_2x3_matrix() {
