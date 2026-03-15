@@ -1,15 +1,3 @@
-mod training {
-    pub mod and_gate;
-    pub mod nand_gate;
-    pub mod nor_gate;
-    pub mod not_gate;
-    pub mod or_gate;
-    pub mod xnor_gate;
-    pub mod xor_gate;
-}
-
-pub mod computer;
-
 use std::io::{self, Write};
 
 fn main() {
@@ -44,48 +32,48 @@ fn main() {
     io::stdin().read_line(&mut input).unwrap();
 
     match input.trim() {
-        "1" => training::xor_gate::run(),
-        "2" => training::and_gate::run(),
-        "3" => training::or_gate::run(),
-        "4" => training::nand_gate::run(),
-        "5" => training::not_gate::run(),
-        "6" => training::nor_gate::run(),
-        "7" => training::xnor_gate::run(),
+        "1" => aspirina_gates::training::xor_gate::run(),
+        "2" => aspirina_gates::training::and_gate::run(),
+        "3" => aspirina_gates::training::or_gate::run(),
+        "4" => aspirina_gates::training::nand_gate::run(),
+        "5" => aspirina_gates::training::not_gate::run(),
+        "6" => aspirina_gates::training::nor_gate::run(),
+        "7" => aspirina_gates::training::xnor_gate::run(),
         "8" => {
             println!("=== Neural Computer Logic Gates Test ===");
-            computer::gates::test_all_gates();
+            aspirina_gates::computer::gates::test_all_gates();
         }
         "9" => {
             println!("=== Neural Computer Half Adder Test ===");
-            computer::half_adder::test();
+            aspirina_gates::computer::half_adder::test();
         }
         "10" => {
             println!("=== Neural Computer Full Adder Test ===");
-            computer::full_adder::test();
+            aspirina_gates::computer::full_adder::test();
         }
         "11" => {
             println!("=== Neural Computer 4-bit ALU Test ===");
-            computer::alu::test();
+            aspirina_gates::computer::alu::test();
         }
         "12" => {
             println!("=== Neural Computer Memory Test ===");
-            computer::memory::test();
+            aspirina_gates::computer::memory::test();
         }
         "13" => {
             println!("=== Neural Computer Registers Test ===");
-            computer::registers::test();
+            aspirina_gates::computer::registers::test();
         }
         "14" => {
             println!("=== Neural Computer CPU Test ===");
-            computer::cpu::test();
+            aspirina_gates::computer::cpu::test();
         }
         "15" => {
             println!("=== Neural Computer Assembler Test ===");
-            computer::assembler::test();
+            aspirina_gates::computer::assembler::test();
         }
         "16" => {
             println!("=== Neural Computer Interpreter Test ===");
-            computer::interpreter::test();
+            aspirina_gates::computer::interpreter::test();
         }
         "0" => println!("Goodbye!"),
         _ => println!("Invalid selection. Please run again and choose 0-16."),

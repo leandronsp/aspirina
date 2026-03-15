@@ -1,22 +1,17 @@
-use aspirina::layer::Layer;
-use aspirina::matrix::Matrix;
-use aspirina::neural_network::NeuralNetwork;
+use crate::layer::Layer;
+use crate::neural_network::NeuralNetwork;
+use aspirina_core::matrix::Matrix;
 
 pub fn run() {
-    println!("=== NOR Gate Training ===");
-    println!("Training neural network to learn NOR logic gate...");
+    println!("=== NOT Gate Training ===");
+    println!("Training neural network to learn NOT logic gate...");
 
     let network = create_network();
 
-    let input = Matrix::new(vec![
-        vec![0.0, 0.0],
-        vec![0.0, 1.0],
-        vec![1.0, 0.0],
-        vec![1.0, 1.0],
-    ]);
+    // NOT gate: single input, inverted output
+    let input = Matrix::new(vec![vec![0.0], vec![1.0]]);
 
-    // NOR: inverted OR - only true when both inputs are false
-    let targets = Matrix::new(vec![vec![1.0, 0.0, 0.0, 0.0]]);
+    let targets = Matrix::new(vec![vec![1.0, 0.0]]);
 
     // Training loop with progress
     let epochs = 10_000;
@@ -28,24 +23,15 @@ pub fn run() {
     }
 
     println!("\n=== Training Complete ===");
-    println!("Testing NOR gate logic:");
+    println!("Testing NOT gate logic:");
 
-    // Test all NOR combinations
-    let test_cases = [
-        (vec![0.0, 0.0], "0 NOR 0"),
-        (vec![0.0, 1.0], "0 NOR 1"),
-        (vec![1.0, 0.0], "1 NOR 0"),
-        (vec![1.0, 1.0], "1 NOR 1"),
-    ];
+    // Test all NOT combinations
+    let test_cases = [(vec![0.0], "NOT 0"), (vec![1.0], "NOT 1")];
 
     for (input_vals, description) in test_cases {
         let result = network.predict(Matrix::new(vec![input_vals.clone()]));
         let output = result.data[0][0];
-        let expected = if input_vals[0] == 0.0 && input_vals[1] == 0.0 {
-            1.0
-        } else {
-            0.0
-        };
+        let expected = if input_vals[0] == 0.0 { 1.0 } else { 0.0 };
 
         println!(
             "{} = {:.4} (expected: {:.1})",
@@ -67,13 +53,13 @@ pub fn run() {
 }
 
 fn create_network() -> NeuralNetwork {
+    // NOT gate with single input - simplified architecture
     let layers = vec![
         Layer::new(Matrix::new(vec![
-            vec![-0.8, -0.8], // Negative weights to invert OR logic
-            vec![-0.5, -0.5], // Additional negative weights
-            vec![0.3, 0.3],   // Helper positive weights
+            vec![-1.5], // Strong negative weight to invert
+            vec![0.8],  // Helper neuron
         ])),
-        Layer::new(Matrix::new(vec![vec![1.0, 1.2, -0.4]])),
+        Layer::new(Matrix::new(vec![vec![1.2, -0.6]])),
     ];
 
     NeuralNetwork::new(layers)

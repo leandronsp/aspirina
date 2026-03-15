@@ -1,0 +1,8 @@
+[package]
+name = "aspirina-core"
+version = "0.1.1"
+edition = "2021"
+description = "Core matrix operations and activation functions for Aspirina neural network library"
+license = "MIT"
+
+[dependencies]

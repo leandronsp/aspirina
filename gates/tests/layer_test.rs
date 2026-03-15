@@ -1,5 +1,5 @@
-use aspirina::layer::Layer;
-use aspirina::matrix::Matrix;
+use aspirina_core::matrix::Matrix;
+use aspirina_gates::layer::Layer;
 
 #[test]
 fn create_layer_with_matrix() {

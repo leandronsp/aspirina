@@ -3,5 +3,19 @@
 version = 4
 
 [[package]]
-name = "aspirina"
+name = "aspirina-core"
 version = "0.1.1"
+
+[[package]]
+name = "aspirina-gates"
+version = "0.1.1"
+dependencies = [
+ "aspirina-core",
+]
+
+[[package]]
+name = "aspirina-language"
+version = "0.1.1"
+dependencies = [
+ "aspirina-core",
+]

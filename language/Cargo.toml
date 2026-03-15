@@ -1,0 +1,9 @@
+[package]
+name = "aspirina-language"
+version = "0.1.1"
+edition = "2021"
+description = "Language models for Aspirina neural network library"
+license = "MIT"
+
+[dependencies]
+aspirina-core = { path = "../core" }

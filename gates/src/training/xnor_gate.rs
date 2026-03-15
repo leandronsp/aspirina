@@ -1,6 +1,6 @@
-use aspirina::layer::Layer;
-use aspirina::matrix::Matrix;
-use aspirina::neural_network::NeuralNetwork;
+use crate::layer::Layer;
+use crate::neural_network::NeuralNetwork;
+use aspirina_core::matrix::Matrix;
 
 pub fn run() {
     println!("=== XNOR Gate Training ===");

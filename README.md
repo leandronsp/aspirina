@@ -19,34 +19,20 @@ Inspired by [leandronsp/morphine](https://github.com/leandronsp/morphine).
 
 ## Development Commands
 
-### Build the project
 ```bash
-cargo build
-```
-
-### Run the CLI menu for training samples
-```bash
-cargo run
-```
-
-### Run all tests
-```bash
-cargo test
-```
-
-### Format code
-```bash
-cargo fmt
-```
-
-### Lint code
-```bash
-cargo clippy
+cargo build                      # Build all crates
+cargo test                       # Run all tests across workspace
+cargo test -p aspirina-core      # Run core tests only (matrix, calc)
+cargo test -p aspirina-gates     # Run gates tests only (layer, neural_network)
+cargo test -- --nocapture        # Run tests with stdout output
+cargo run -p aspirina-gates      # Interactive menu (gate training + computer tests)
+cargo fmt                        # Format code
+cargo clippy                     # Lint code
 ```
 
 ## Training Samples
 
-Run `cargo run` to access an interactive menu with logic gate training scenarios and computer component tests.
+Run `cargo run -p aspirina-gates` to access an interactive menu with logic gate training scenarios and computer component tests.
 
 ### Logic Gates (Training Scenarios 1-7)
 Each gate is trained with 10,000 epochs to learn boolean logic operations:
@@ -87,39 +73,50 @@ This demonstrates that neural networks can learn to perform deterministic comput
 
 ## Project Structure
 
-```
-src/
-├── main.rs           # Interactive menu for training and testing
-├── lib.rs            # Module declarations
-├── calc.rs           # Activation functions (sigmoid, tanh)
-├── matrix.rs         # Matrix operations with operator overloading
-├── layer.rs          # Neural network layer
-├── neural_network.rs # Core neural network with backpropagation
-├── training/         # Logic gate training scenarios
-│   ├── and_gate.rs
-│   ├── nand_gate.rs
-│   ├── nor_gate.rs
-│   ├── not_gate.rs
-│   ├── or_gate.rs
-│   ├── xnor_gate.rs
-│   └── xor_gate.rs
-└── computer/         # Neural computer components
-    ├── mod.rs
-    ├── gates.rs      # All 7 logic gates consolidated
-    ├── half_adder.rs # XOR + AND gates
-    ├── full_adder.rs # 2 half adders + OR gate
-    ├── alu.rs        # 4-bit ALU with arithmetic/logic ops
-    ├── memory.rs     # 16 x 4-bit memory cells
-    ├── registers.rs  # CPU registers and flags
-    ├── cpu.rs        # Complete CPU with instruction set
-    ├── assembler.rs  # Assembly to machine code converter
-    └── interpreter.rs # High-level language interpreter
+Cargo workspace with three crates:
 
-tests/
-├── calc_test.rs
-├── matrix_test.rs
-├── layer_test.rs
-└── neural_network_test.rs
+```
+core/                            # aspirina-core: math primitives
+├── src/
+│   ├── lib.rs                   # pub mod calc, matrix
+│   ├── matrix.rs                # Matrix operations with operator overloading
+│   └── calc.rs                  # Activation functions (sigmoid, tanh)
+└── tests/
+    ├── matrix_test.rs
+    └── calc_test.rs
+
+gates/                           # aspirina-gates: neural network + training + computer
+├── src/
+│   ├── lib.rs                   # pub mod layer, neural_network, training, computer
+│   ├── main.rs                  # Interactive menu for training and testing
+│   ├── layer.rs                 # Neural network layer
+│   ├── neural_network.rs        # Core neural network with backpropagation
+│   ├── training/                # Logic gate training scenarios
+│   │   ├── and_gate.rs
+│   │   ├── nand_gate.rs
+│   │   ├── nor_gate.rs
+│   │   ├── not_gate.rs
+│   │   ├── or_gate.rs
+│   │   ├── xnor_gate.rs
+│   │   └── xor_gate.rs
+│   └── computer/                # Neural computer components
+│       ├── mod.rs
+│       ├── gates.rs             # All 7 logic gates consolidated
+│       ├── half_adder.rs        # XOR + AND gates
+│       ├── full_adder.rs        # 2 half adders + OR gate
+│       ├── alu.rs               # 4-bit ALU with arithmetic/logic ops
+│       ├── memory.rs            # 16 x 4-bit memory cells
+│       ├── registers.rs         # CPU registers and flags
+│       ├── cpu.rs               # Complete CPU with instruction set
+│       ├── assembler.rs         # Assembly to machine code converter
+│       └── interpreter.rs       # High-level language interpreter
+└── tests/
+    ├── layer_test.rs
+    └── neural_network_test.rs
+
+language/                        # aspirina-language: nano-LLM (placeholder)
+└── src/
+    └── lib.rs
 ```
 
 ## Usage as Dependency

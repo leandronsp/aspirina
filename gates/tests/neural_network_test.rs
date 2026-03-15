@@ -1,6 +1,6 @@
-use aspirina::layer::Layer;
-use aspirina::matrix::Matrix;
-use aspirina::neural_network::NeuralNetwork;
+use aspirina_core::matrix::Matrix;
+use aspirina_gates::layer::Layer;
+use aspirina_gates::neural_network::NeuralNetwork;
 
 #[test]
 fn create_neural_network() {

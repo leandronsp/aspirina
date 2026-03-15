@@ -1,55 +1,64 @@
 # Aspirina
 
-Neural network library in Rust. The core is matrix operations and layers with feedforward/backpropagation. Everything else are examples that exercise the library.
+Neural network library in Rust, organized as a Cargo workspace. The core is matrix operations and activation functions. Gates builds neural network layers, training scenarios, and a neural computer on top of core. Language is a placeholder for nano-LLM work.
 
-The `src/computer/` module is a sample project: a 4-bit neural CPU where all arithmetic/logic is performed by trained neural networks. Extracted to [Synapse](https://github.com/leandronsp/synapse).
+The `gates/src/computer/` module is a sample project: a 4-bit neural CPU where all arithmetic/logic is performed by trained neural networks. Extracted to [Synapse](https://github.com/leandronsp/synapse).
 
 ## Project Structure
 
 ```
-├── src/
-│   ├── lib.rs                # Re-exports core modules
-│   ├── main.rs               # Interactive menu
-│   ├── matrix.rs             # Matrix type with operator overloading, transpose, element-wise ops
-│   ├── calc.rs               # Sigmoid, tanh with derivatives
-│   ├── layer.rs              # Single network layer: weights + cached forward result
-│   ├── neural_network.rs     # Rc<RefCell<Layer>> shared layers, forward/backward, train, predict
-│   ├── training/             # Logic gate training scenarios (XOR, AND, OR, etc.)
-│   └── computer/             # 4-bit neural CPU (gates, ALU, memory, CPU, assembler)
-├── tests/
-│   ├── matrix_test.rs
-│   ├── calc_test.rs
-│   ├── layer_test.rs
-│   └── neural_network_test.rs
+├── core/                        # aspirina-core: math primitives
+│   ├── src/
+│   │   ├── lib.rs               # pub mod calc, matrix
+│   │   ├── matrix.rs            # Matrix type with operator overloading, transpose, element-wise ops
+│   │   └── calc.rs              # Sigmoid, tanh with derivatives
+│   └── tests/
+│       ├── matrix_test.rs
+│       └── calc_test.rs
+├── gates/                       # aspirina-gates: neural network + training + computer
+│   ├── src/
+│   │   ├── lib.rs               # pub mod layer, neural_network, training, computer
+│   │   ├── main.rs              # Interactive menu
+│   │   ├── layer.rs             # Single network layer: weights + cached forward result
+│   │   ├── neural_network.rs    # Rc<RefCell<Layer>> shared layers, forward/backward, train, predict
+│   │   ├── training/            # Logic gate training scenarios (XOR, AND, OR, etc.)
+│   │   └── computer/            # 4-bit neural CPU (gates, ALU, memory, CPU, assembler)
+│   └── tests/
+│       ├── layer_test.rs
+│       └── neural_network_test.rs
+├── language/                    # aspirina-language: nano-LLM (placeholder)
+│   └── src/
+│       └── lib.rs               # Re-exports aspirina-core
 ├── .claude/
 │   ├── agents/
-│   │   ├── scout.md          # Read-only codebase explorer
-│   │   ├── code-reviewer.md  # Staff Engineer reviewer (Rust)
-│   │   └── plan-reviewer.md  # Implementation plan stress-tester
+│   │   ├── scout.md             # Read-only codebase explorer
+│   │   ├── code-reviewer.md     # Staff Engineer reviewer (Rust)
+│   │   └── plan-reviewer.md     # Implementation plan stress-tester
 │   ├── rules/
-│   │   ├── git.md            # Git conventions (commits, branches, staging)
-│   │   ├── testing.md        # TDD conventions
-│   │   └── rust.md           # Rust patterns and anti-patterns
+│   │   ├── git.md               # Git conventions (commits, branches, staging)
+│   │   ├── testing.md           # TDD conventions
+│   │   └── rust.md              # Rust patterns and anti-patterns
 │   └── skills/
-│       ├── commit/skill.md   # Git commit
-│       ├── dev/skill.md      # TDD implementer
-│       ├── review/skill.md   # Code review
-│       ├── po/skill.md       # Product Owner (GitHub issues)
-│       └── pr/skill.md       # Pull request creator
+│       ├── commit/skill.md      # Git commit
+│       ├── dev/skill.md         # TDD implementer
+│       ├── review/skill.md      # Code review
+│       ├── po/skill.md          # Product Owner (GitHub issues)
+│       └── pr/skill.md          # Pull request creator
 └── CLAUDE.md
 ```
 
 ## Build & Run
 
 ```bash
-cargo build              # Build
-cargo run                # Interactive menu (gate training + computer tests)
-cargo run --release      # Optimized build
-cargo test               # All tests
-cargo test matrix_test   # Single test file
-cargo test -- --nocapture # Tests with stdout
-cargo fmt                # Format
-cargo clippy             # Lint
+cargo build                      # Build all crates
+cargo run -p aspirina-gates      # Interactive menu (gate training + computer tests)
+cargo test                       # All tests across workspace
+cargo test -p aspirina-core      # Core tests only
+cargo test -p aspirina-gates     # Gates tests only
+cargo test matrix_test           # Single test file
+cargo test -- --nocapture        # Tests with stdout
+cargo fmt                        # Format
+cargo clippy                     # Lint
 ```
 
 ## Code Standards
