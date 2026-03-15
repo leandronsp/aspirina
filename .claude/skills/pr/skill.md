@@ -1,0 +1,137 @@
+---
+name: pr
+description: Open or update a draft PR for the current branch. Use when: create PR, open PR, draft PR, pull request, prepare for review.
+---
+
+# Draft PR Creator
+
+Creates or updates a draft pull request for the current branch.
+
+## Usage
+
+- `/pr` - Create draft PR for current branch (or update if one exists)
+- `/pr <url>` - Update existing PR description
+
+## Workflow
+
+### 1. Ensure feature branch and commit
+
+**NEVER commit to `main` unless the user explicitly requests it.**
+
+```bash
+git branch --show-current
+git status
+```
+
+If on `main`, create and switch to a feature branch before doing anything else:
+
+```bash
+git checkout -b <type>/<short-name>
+```
+
+Branch naming follows the PR type prefix:
+- `feat/` — new features
+- `fix/` — bug fixes
+- `refactor/` — refactoring
+- `test/` — test additions
+- `chore/` — maintenance
+- `docs/` — documentation
+
+After ensuring you're on a feature branch, check for uncommitted changes. If there are staged or unstaged changes, commit them using conventional commit format:
+
+```bash
+git add <relevant files>
+git commit -m "<type>: <description>"
+```
+
+Only proceed once all changes are committed on a feature branch.
+
+### 2. Gather context
+
+```bash
+git log main..HEAD --oneline
+git diff main...HEAD --stat
+```
+
+### 2.5. Identify source issue
+
+If the PR was created from a `/dev <issue>` workflow, you already have the issue number in context. Otherwise, check the branch name or commit messages for issue references.
+
+### 3. Check if PR already exists
+
+```bash
+gh pr view --json number,title,body 2>/dev/null
+```
+
+### 4. Write PR description
+
+Use the template below. Keep it concise and natural.
+
+### 5a. If NO existing PR - Create draft PR
+
+```bash
+gh pr create --draft --title "<title>" --body "$(cat <<'EOF'
+<body>
+EOF
+)"
+```
+
+### 5b. If PR already exists - Update description
+
+```bash
+gh pr edit --title "<title>" --body "$(cat <<'EOF'
+<updated body>
+EOF
+)"
+```
+
+Report the PR URL to the user when done.
+
+## PR Title Format
+
+```
+<type>: <short description>
+```
+
+Types: `feat:`, `fix:`, `refactor:`, `test:`, `chore:`, `docs:`
+
+Rules:
+- Lowercase after prefix
+- Present tense imperative ("add" not "added")
+- Under 70 characters
+
+## PR Body Template
+
+```markdown
+Closes #<issue_number>
+
+## Summary
+
+1-2 paragraphs explaining what this does and why.
+
+## Changes
+
+- Highlight 1
+- Highlight 2
+- Highlight 3
+
+## Testing
+
+- [ ] `cargo test` passes
+- [ ] `cargo clippy` clean
+- [ ] `cargo fmt --check` clean
+```
+
+Omit the `Closes #...` line if there is no source issue.
+
+## Style
+
+- **Fluid prose** in Summary — natural writing, not robotic
+- **2-3 bullet points** in Changes — highlights only, not a file list
+- **No file lists** — GitHub shows that in "Files changed"
+
+## Pipeline
+
+```
+/dev <issue> -> /review -> /commit -> /pr -> merge
+```
